@@ -8,6 +8,8 @@
   "dependencies": {
     "@slack/bolt": "^1.4.1",
     "@types/node": "^12.12.17",
-    "typescript": "^3.7.3"
+    "@types/uuid": "^3.4.6",
+    "typescript": "^3.7.3",
+    "uuid": "^3.3.3"
   }
 }
