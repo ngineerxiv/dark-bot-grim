@@ -1,3 +1,5 @@
+import { applyCacheBuster } from "./util/Url";
+
 type BotReaction = (
   messageSend: (message: string) => void,
   matched: Array<string>
@@ -11,9 +13,10 @@ export const MentionedReactions: Array<[RegExp, BotReaction, Help?]> = (() => {
     [
       /PING/i,
       async send => {
-        send("PONG");
+        const p = applyCacheBuster("http://yamiga.waka.ru.com/images/ping.jpg");
+        send(p);
       },
-      `${botName} ping - pong`
+      `${botName} ping - ハローハロー`
     ]
   ];
 
