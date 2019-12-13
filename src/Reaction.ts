@@ -1,14 +1,13 @@
 import { applyCacheBuster } from "./util/Url";
 
-type BotReaction = (
+export type BotReaction = (
   messageSend: (message: string) => void,
   matched: Array<string>
 ) => Promise<void>;
 
-type Help = string;
+export type Help = (bot: string) => string;
 
 export const MentionedReactions: Array<[RegExp, BotReaction, Help?]> = (() => {
-  const botName = "@grim"; // TODO get from slack app
   const r: Array<[RegExp, BotReaction, Help?]> = [
     [
       /PING/i,
@@ -16,15 +15,16 @@ export const MentionedReactions: Array<[RegExp, BotReaction, Help?]> = (() => {
         const p = applyCacheBuster("http://yamiga.waka.ru.com/images/ping.jpg");
         send(p);
       },
-      `${botName} ping - ハローハロー`
+      b => `${b} ping - ハローハロー`
     ]
   ];
 
   r.push([
     /HELP$/i,
     async messageSend => {
+      const botName = "@grim";
       const helps = r.map(v => v[2]).filter(v => v !== undefined);
-      const message = "\n" + helps.join("\n");
+      const message = "\n" + helps.map(h => h(botName)).join("\n");
       messageSend(message);
     }
   ]);
