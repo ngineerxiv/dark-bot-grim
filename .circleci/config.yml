@@ -1,0 +1,26 @@
+version: 2.1
+executors:
+  build_js:
+    working_directory: ~/repo
+    docker:
+      # https://circleci.com/docs/ja/2.0/docker-image-tags.json
+      - image: circleci/node:10.16.3
+jobs:
+  build:
+    executor:
+      name: build_js
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - ui-cache-{{ checksum "package.json" }}
+            - ui-cache-
+      - run: make install
+
+      - save_cache:
+          paths:
+              - node_modules
+          key: ui-cache-{{ checksum "package.json" }}
+
+      - run: make compile
+
