@@ -1,0 +1,13 @@
+{
+  "name": "dark-bot-grim",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "ssh://git@github.com/ngineerxiv/dark-bot-grim.git",
+  "author": "ngineerxiv@gmail.com",
+  "license": "MIT",
+  "dependencies": {
+    "@slack/bolt": "^1.4.1",
+    "@types/node": "^12.12.17",
+    "typescript": "^3.7.3"
+  }
+}
