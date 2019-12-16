@@ -49,6 +49,10 @@ const tries = [
   () => applyCacheBuster("https://cdn.hotolab.net/images/lgtm_mrtry.gif")
 ];
 
+const papixes = [
+  () => ":papicent: 「強いbotはprettierを捨てる」",
+];
+
 export const reactions: Array<[RegExp, BotReaction, Help?]> = [
   [
     /GOMA/i,
@@ -86,6 +90,11 @@ export const reactions: Array<[RegExp, BotReaction, Help?]> = [
     /(MRTRY|TRY)/i,
     async send => send(random(tries)()),
     b => `${b} try|mrtry - やればわかる`
+  ],
+  [
+    /PAPIX/i,
+    async send => send(random(papixes)()),
+    b => `${b} papix - やればわかる`
   ],
   [
     /^5000兆円欲しい$/,
