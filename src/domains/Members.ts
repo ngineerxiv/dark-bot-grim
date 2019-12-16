@@ -1,5 +1,6 @@
 import { applyCacheBuster } from "../util/Url";
-import { Help, BotReaction } from "../Reaction";
+import { BotReactionPattern } from "../Reaction";
+import { random } from "../util/Rondom";
 
 const gomas = [
   () => applyCacheBuster("http://yamiga.waka.ru.com/images/goma/01.jpg"),
@@ -49,11 +50,9 @@ const tries = [
   () => applyCacheBuster("https://cdn.hotolab.net/images/lgtm_mrtry.gif")
 ];
 
-const papixes = [
-  () => ":papicent: 「強いbotはprettierを捨てる」",
-];
+const papixes = [() => ":papicent: 「強いbotはprettierを捨てる」"];
 
-export const reactions: Array<[RegExp, BotReaction, Help?]> = [
+export const reactions: Array<BotReactionPattern> = [
   [
     /GOMA/i,
     async send => {
@@ -76,7 +75,7 @@ export const reactions: Array<[RegExp, BotReaction, Help?]> = [
     b => `${b} kirin - やればわかる`
   ],
   [
-    /KIGIN (\d+)$/i,
+    /KIRIN (\d+)$/i,
     async (send, matched: Array<string>) => {
       const n = matched[1];
       const x = parseFloat(n);

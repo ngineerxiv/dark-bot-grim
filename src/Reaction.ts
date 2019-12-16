@@ -1,4 +1,5 @@
-import { applyCacheBuster } from "./util/Url";
+import { reactions as MemberReactions } from "./domains/Members";
+import { reactions as DiagnosticsReactions } from "./domains/Diagnostics";
 
 export type BotReaction = (
   messageSend: (message: string) => void,
@@ -7,18 +8,13 @@ export type BotReaction = (
 
 export type Help = (bot: string) => string;
 
-export const MentionedReactions: Array<[RegExp, BotReaction, Help?]> = (() => {
-  const r: Array<[RegExp, BotReaction, Help?]> = [
-    [
-      /PING/i,
-      async send => {
-        const p = applyCacheBuster("http://yamiga.waka.ru.com/images/ping.jpg");
-        send(p);
-      },
-      b => `${b} ping - ハローハロー`
-    ]
-  ];
+export type BotReactionPattern = [RegExp, BotReaction, Help?];
 
+export const MentionedReactions: Array<BotReactionPattern> = (() => {
+  const r: Array<BotReactionPattern> = [].concat(
+    MemberReactions,
+    DiagnosticsReactions
+  );
   r.push([
     /HELP$/i,
     async messageSend => {
