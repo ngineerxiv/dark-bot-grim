@@ -98,7 +98,7 @@ export const reactions: Array<BotReaction> = [
   {
     pattern: /^5000兆円欲しい$/,
     reaction: async send =>
-      send(":atamanowaruihito: :momu:  :momu: :exclamation:"),
+      send(":5: :0: :0sono1: :0sono2: :chou: :en: :ho: :shi: :ii:"),
     alsoNotMentioned: true
   }
 ];
