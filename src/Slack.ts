@@ -4,7 +4,7 @@ import {
   Middleware,
   SlackEventMiddlewareArgs
 } from "@slack/bolt";
-import { MentionedReactions } from "./Reaction";
+import { Reactions } from "./Reaction";
 
 export async function init(
   botToken: string,
@@ -20,7 +20,7 @@ export async function init(
     console.error(e);
   });
 
-  MentionedReactions.forEach(v => {
+  Reactions.forEach(v => {
     const listeners: Array<Middleware<SlackEventMiddlewareArgs<"message">>> =
       v.alsoNotMentioned ?? false ? [] : [directMention()];
     listeners.push(async ({ context, say }) => {
