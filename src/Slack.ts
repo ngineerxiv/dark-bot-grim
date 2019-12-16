@@ -24,7 +24,7 @@ export async function init(
     const listeners: Array<Middleware<SlackEventMiddlewareArgs<"message">>> =
       v.alsoNotMentioned ?? false ? [] : [directMention()];
     listeners.push(async ({ context, say }) => {
-      const matched = context.matched;
+      const matched = context.matches;
       v.reaction((m: string) => say(m), matched === null ? [] : matched);
     });
     app.message(v.pattern, ...listeners);

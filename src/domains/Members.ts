@@ -79,7 +79,7 @@ export const reactions: Array<BotReaction> = [
       `${b} kirin 140000 - 1きりんは・・・ ref: https://togetter.com/li/1224842 `
   },
   {
-    pattern: /KIRIN/i,
+    pattern: /KIRIN$/i,
     reaction: async send => {
       send(random(kirins)());
     },
