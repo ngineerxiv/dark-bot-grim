@@ -1,6 +1,6 @@
 import { applyCacheBuster } from "../util/Url";
 import { BotReactionPattern } from "../Reaction";
-import { random } from "../util/Rondom";
+import { random } from "../util/Random";
 
 const gomas = [
   () => applyCacheBuster("http://yamiga.waka.ru.com/images/goma/01.jpg"),
