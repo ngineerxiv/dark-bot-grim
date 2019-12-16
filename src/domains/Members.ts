@@ -68,13 +68,6 @@ export const reactions: Array<BotReaction> = [
     help: b => `${b} goma - やればわかる`
   },
   {
-    pattern: /KIRIN/i,
-    reaction: async send => {
-      send(random(kirins)());
-    },
-    help: b => `${b} kirin - やればわかる`
-  },
-  {
     pattern: /KIRIN (\d+)$/i,
     reaction: async (send, matched: Array<string>) => {
       const n = matched[1];
@@ -84,6 +77,13 @@ export const reactions: Array<BotReaction> = [
     },
     help: b =>
       `${b} kirin 140000 - 1きりんは・・・ ref: https://togetter.com/li/1224842 `
+  },
+  {
+    pattern: /KIRIN/i,
+    reaction: async send => {
+      send(random(kirins)());
+    },
+    help: b => `${b} kirin - やればわかる`
   },
   {
     pattern: /(MRTRY|TRY)/i,
