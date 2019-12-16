@@ -1,5 +1,5 @@
 import { applyCacheBuster } from "../util/Url";
-import { BotReactionPattern } from "../Reaction";
+import { BotReaction } from "../Reaction";
 import { random } from "../util/Random";
 
 const gomas = [
@@ -52,51 +52,53 @@ const tries = [
 
 const papixes = [() => ":papicent: 「強いbotはprettierを捨てる」"];
 
-export const reactions: Array<BotReactionPattern> = [
-  [
-    /GOMA/i,
-    async send => {
+export const reactions: Array<BotReaction> = [
+  {
+    pattern: /GOMA/i,
+    reaction: async send => {
       send(random(gomas)());
     },
-    b => `${b} goma - やればわかる`
-  ],
-  [
-    /ISAO/i,
-    async send => {
+    help: b => `${b} goma - やればわかる`
+  },
+  {
+    pattern: /ISAO/i,
+    reaction: async send => {
       send(random(isaos)());
     },
-    b => `${b} goma - やればわかる`
-  ],
-  [
-    /KIRIN/i,
-    async send => {
+    help: b => `${b} goma - やればわかる`
+  },
+  {
+    pattern: /KIRIN/i,
+    reaction: async send => {
       send(random(kirins)());
     },
-    b => `${b} kirin - やればわかる`
-  ],
-  [
-    /KIRIN (\d+)$/i,
-    async (send, matched: Array<string>) => {
+    help: b => `${b} kirin - やればわかる`
+  },
+  {
+    pattern: /KIRIN (\d+)$/i,
+    reaction: async (send, matched: Array<string>) => {
       const n = matched[1];
       const x = parseFloat(n);
       const y = x / 140000;
       send(`${n}円は${y}きりん`);
     },
-    b =>
+    help: b =>
       `${b} kirin 140000 - 1きりんは・・・ ref: https://togetter.com/li/1224842 `
-  ],
-  [
-    /(MRTRY|TRY)/i,
-    async send => send(random(tries)()),
-    b => `${b} try|mrtry - やればわかる`
-  ],
-  [
-    /PAPIX/i,
-    async send => send(random(papixes)()),
-    b => `${b} papix - やればわかる`
-  ],
-  [
-    /^5000兆円欲しい$/,
-    async send => send(":atamanowaruihito: :momu:  :momu: :exclamation:")
-  ]
+  },
+  {
+    pattern: /(MRTRY|TRY)/i,
+    reaction: async send => send(random(tries)()),
+    help: b => `${b} try|mrtry - やればわかる`
+  },
+  {
+    pattern: /PAPIX/i,
+    reaction: async send => send(random(papixes)()),
+    help: b => `${b} papix - やればわかる`
+  },
+  {
+    pattern: /^5000兆円欲しい$/,
+    reaction: async send =>
+      send(":atamanowaruihito: :momu:  :momu: :exclamation:"),
+    alsoNotMentioned: true
+  }
 ];

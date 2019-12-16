@@ -1,4 +1,9 @@
-import { App, directMention } from "@slack/bolt";
+import {
+  App,
+  directMention,
+  Middleware,
+  SlackEventMiddlewareArgs
+} from "@slack/bolt";
 import { MentionedReactions } from "./Reaction";
 
 export async function init(
@@ -16,11 +21,13 @@ export async function init(
   });
 
   MentionedReactions.forEach(v => {
-    const [re, func, _] = v;
-    app.message(re, directMention(), async ({ context, say }) => {
+    const listeners: Array<Middleware<SlackEventMiddlewareArgs<"message">>> =
+      v.alsoNotMentioned ?? false ? [] : [directMention()];
+    listeners.push(async ({ context, say }) => {
       const matched = context.matched;
-      func((m: string) => say(m), matched === null ? [] : matched);
+      v.reaction((m: string) => say(m), matched === null ? [] : matched);
     });
+    app.message(v.pattern, ...listeners);
   });
   return await app.start(eventPort);
 }
