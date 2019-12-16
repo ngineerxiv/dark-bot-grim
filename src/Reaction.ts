@@ -1,5 +1,5 @@
-import { reactions as MemberReactions } from "./domains/Members";
-import { reactions as DiagnosticsReactions } from "./domains/Diagnostics";
+import { reactions as MemberReactions } from "./reactions/Members";
+import { reactions as DiagnosticsReactions } from "./reactions/Diagnostics";
 
 export interface BotReaction {
   pattern: RegExp;
