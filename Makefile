@@ -1,4 +1,4 @@
-YARN=yarn
+NPM=npm
 NODE=node
 NGROK=ngrok
 HEROKU=heroku
@@ -7,10 +7,10 @@ env=.env
 heroku_app_name=
 
 install:
-	$(YARN) install
+	$(NPM) install
 
 compile:
-	$(YARN) run tsc
+	$(NPM) run tsc
 
 run: $(env) compile
 	set -o allexport && . ./$< && $(NODE) ./src/Run.js
