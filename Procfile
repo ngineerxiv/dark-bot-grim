@@ -1,2 +1,2 @@
-web: npm tsc && node src/Run.js
+web: npm run tsc && node src/Run.js
 
