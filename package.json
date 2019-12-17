@@ -10,7 +10,8 @@
     "lint": "npm run eslint",
     "eslint": "eslint 'src/**/*.ts'",
     "eslint:fix": "npm run eslint --fix",
-    "prettier:fix": "prettier './src/**/*.ts' --write"
+    "prettier:fix": "prettier './src/**/*.ts' --write",
+    "tsc": "tsc"
   },
   "dependencies": {
     "@slack/bolt": "^1.4.1",
