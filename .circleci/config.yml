@@ -24,3 +24,5 @@ jobs:
 
       - run: make compile
 
+      - run: npm run lint
+

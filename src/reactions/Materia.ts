@@ -1,21 +1,21 @@
-import { applyCacheBuster } from "../util/Url";
-import { BotReaction } from "../Reaction";
-import { random } from "../util/Random";
+import { applyCacheBuster } from '../util/Url';
+import { BotReaction } from '../Reaction';
+import { random } from '../util/Random';
 
 const materia = [
-  () => "黒マテリア",
-  () => "黒マテリア",
-  () => "黒マテリア",
-  () => "黒マテリア",
-  () => "黒マテリア",
-  () => "黒マテリア",
-  () => "メテオ呼ぶ",
-  () => "メテオ呼ぶ",
-  () => "メテオ呼ぶ",
-  () => applyCacheBuster("http://yamiga.waka.ru.com/images/cloud.jpg"),
-  () => applyCacheBuster("http://yamiga.waka.ru.com/images/cloud.jpg"),
-  () => applyCacheBuster("http://yamiga.waka.ru.com/images/cloud.jpg"),
-  () => "ックパッド"
+  () => '黒マテリア',
+  () => '黒マテリア',
+  () => '黒マテリア',
+  () => '黒マテリア',
+  () => '黒マテリア',
+  () => '黒マテリア',
+  () => 'メテオ呼ぶ',
+  () => 'メテオ呼ぶ',
+  () => 'メテオ呼ぶ',
+  () => applyCacheBuster('http://yamiga.waka.ru.com/images/cloud.jpg'),
+  () => applyCacheBuster('http://yamiga.waka.ru.com/images/cloud.jpg'),
+  () => applyCacheBuster('http://yamiga.waka.ru.com/images/cloud.jpg'),
+  () => 'ックパッド',
 ];
 
 export const reactions: Array<BotReaction> = [
@@ -25,6 +25,6 @@ export const reactions: Array<BotReaction> = [
       send(random(materia)());
     },
     alsoNotMentioned: true,
-    help: b => `${b} ping - ハローハロー`
-  }
+    help: b => `${b} ping - ハローハロー`,
+  },
 ];

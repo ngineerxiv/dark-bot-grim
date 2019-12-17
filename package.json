@@ -5,11 +5,39 @@
   "repository": "ssh://git@github.com/ngineerxiv/dark-bot-grim.git",
   "author": "ngineerxiv@gmail.com",
   "license": "MIT",
+  "scripts": {
+    "fix": "npm run prettier:fix && npm run eslint:fix",
+    "lint": "npm run eslint",
+    "eslint": "eslint 'src/**/*.ts'",
+    "eslint:fix": "npm run eslint --fix",
+    "prettier:fix": "prettier './src/**/*.ts' --write"
+  },
   "dependencies": {
     "@slack/bolt": "^1.4.1",
     "@types/node": "^12.12.17",
     "@types/uuid": "^3.4.6",
     "typescript": "^3.7.3",
     "uuid": "^3.3.3"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.12.0",
+    "@typescript-eslint/parser": "^2.12.0",
+    "eslint": "^6.7.2",
+    "eslint-config-prettier": "^6.7.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "husky": "^3.1.0",
+    "lint-staged": "^9.5.0",
+    "prettier": "^1.19.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.ts": [
+      "npm run fix",
+      "git add"
+    ]
   }
 }

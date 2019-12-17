@@ -1,7 +1,7 @@
-import { reactions as MemberReactions } from "./reactions/Members";
-import { reactions as DiagnosticsReactions } from "./reactions/Diagnostics";
-import { reactions as KaeritaiReactions } from "./reactions/Kaeritai";
-import { reactions as MateriaReactions } from "./reactions/Materia";
+import { reactions as MemberReactions } from './reactions/Members';
+import { reactions as DiagnosticsReactions } from './reactions/Diagnostics';
+import { reactions as KaeritaiReactions } from './reactions/Kaeritai';
+import { reactions as MateriaReactions } from './reactions/Materia';
 
 export interface BotReaction {
   pattern: RegExp;
@@ -15,16 +15,16 @@ export const Reactions: Array<BotReaction> = (() => {
     MemberReactions,
     DiagnosticsReactions,
     MateriaReactions,
-    KaeritaiReactions
+    KaeritaiReactions,
   );
   r.push({
     pattern: /HELP$/i,
     reaction: async messageSend => {
-      const botName = "@grim";
+      const botName = '@grim';
       const helps = r.map(v => v.help).filter(v => v !== undefined);
-      const message = "\n" + helps.map(h => h(botName)).join("\n");
+      const message = '\n' + helps.map(h => h(botName)).join('\n');
       messageSend(message);
-    }
+    },
   });
   return r;
 })();
