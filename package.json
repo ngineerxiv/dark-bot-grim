@@ -14,7 +14,7 @@
     "tsc": "tsc"
   },
   "dependencies": {
-    "@slack/bolt": "^1.4.1",
+    "@slack/bolt": "^1.5.0",
     "@types/node": "^12.12.20",
     "@types/uuid": "^3.4.6",
     "typescript": "^3.7.3",
