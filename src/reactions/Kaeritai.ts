@@ -4,7 +4,7 @@ import { applyCacheBuster } from '../util/Url';
 export const reactions: Array<BotReaction> = [
   {
     pattern: /^すごい[！!]{2,}/,
-    reaction: async send => {
+    reaction: async (send): Promise<void> => {
       send(
         applyCacheBuster(
           'https://pbs.twimg.com/media/C920YtzVwAAQZvX.jpg',
@@ -16,7 +16,7 @@ export const reactions: Array<BotReaction> = [
   },
   {
     pattern: /遅刻/,
-    reaction: async send => {
+    reaction: async (send): Promise<void> => {
       send(
         applyCacheBuster(
           'https://pbs.twimg.com/media/C8wtqyoVYAAx5br.jpg',
@@ -28,7 +28,7 @@ export const reactions: Array<BotReaction> = [
   },
   {
     pattern: /^帰る[！!]*$/,
-    reaction: async send => {
+    reaction: async (send): Promise<void> => {
       send(
         applyCacheBuster(
           'https://pbs.twimg.com/media/C9HxdfrVYAA-Dth.jpg',
