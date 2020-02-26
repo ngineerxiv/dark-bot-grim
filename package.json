@@ -5,6 +5,9 @@
   "repository": "ssh://git@github.com/ngineerxiv/dark-bot-grim.git",
   "author": "ngineerxiv@gmail.com",
   "license": "MIT",
+  "engines": {
+      "node": "12.x"
+  },
   "scripts": {
     "fix": "npm run prettier:fix && npm run eslint:fix",
     "lint": "npm run eslint",
