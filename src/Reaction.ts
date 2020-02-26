@@ -2,6 +2,7 @@ import { reactions as MemberReactions } from './reactions/Members';
 import { reactions as DiagnosticsReactions } from './reactions/Diagnostics';
 import { reactions as KaeritaiReactions } from './reactions/Kaeritai';
 import { reactions as MateriaReactions } from './reactions/Materia';
+import { reactions as SelectionReactions } from './reactions/Select';
 
 export interface BotReaction {
   pattern: RegExp;
@@ -16,6 +17,7 @@ export const Reactions: Array<BotReaction> = ((): Array<BotReaction> => {
     DiagnosticsReactions,
     MateriaReactions,
     KaeritaiReactions,
+    SelectionReactions,
   );
   r.push({
     pattern: /HELP$/i,
