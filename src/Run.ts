@@ -1,13 +1,13 @@
 import { init as slackInit } from './Slack';
 import { env, validateEnv } from './Env';
 
-function main(): void {
-  validateEnv(env);
-  slackInit(env.slackBotToken, env.slackSigningSecret, env.port).catch(e => {
-    console.error(`Slack Error`);
-    console.error(e);
-  });
+async function main(): Promise<void> {
+  await validateEnv(env);
+  await slackInit(env.slackBotToken, env.slackSigningSecret, env.port);
   console.log(`Slack Event Application started with port ${env.port}`);
 }
 
-main();
+main().catch(e => {
+  console.error(e);
+  process.exit(1);
+});
