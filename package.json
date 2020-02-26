@@ -6,7 +6,7 @@
   "author": "ngineerxiv@gmail.com",
   "license": "MIT",
   "engines": {
-      "node": "12.x"
+      "node": "12.16.1"
   },
   "scripts": {
     "fix": "npm run prettier:fix && npm run eslint:fix",
