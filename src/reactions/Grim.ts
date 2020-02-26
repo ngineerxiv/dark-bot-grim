@@ -1,7 +1,11 @@
+import * as eastasianwidth from 'eastasianwidth';
+import { google } from 'googleapis';
 import { BotReaction } from '../Reaction';
 import { random } from '../util/Random';
 import { applyCacheBuster } from '../util/Url';
-import * as eastasianwidth from 'eastasianwidth';
+import { env } from '../Env';
+
+const customSearch = google.customsearch('v1');
 
 const strpad = (str: string, count: number): string =>
   new Array(count + 1).join(str);
@@ -41,5 +45,23 @@ export const reactions: Array<BotReaction> = [
     },
     help: (b: string): string =>
       `${b} 選んで A B C - 空白やカンマ区切りのなにかから1つを選んでくれる`,
+  },
+  {
+    pattern: /image (.+)$/i,
+    reaction: async (send, matched: Array<string>): Promise<void> => {
+      const query = matched[1];
+      const res = await customSearch.cse.list({
+        cx: env.googleSearchCseId,
+        auth: env.googleSearchApiKey,
+        q: query,
+      });
+      if (res.status !== 200) {
+        send(`Bad HTTP response. status: ${res.status}`);
+        return;
+      }
+      const item = random(res.data.items);
+      send(item.link);
+    },
+    help: (b: string): string => `${b} image hoge - Google Image`,
   },
 ];

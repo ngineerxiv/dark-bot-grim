@@ -2,12 +2,16 @@ interface Env {
   slackBotToken: string;
   slackSigningSecret: string;
   port: string;
+  googleSearchCseId: string;
+  googleSearchApiKey: string;
 }
 
 export const env: Env = {
   slackBotToken: process.env.SLACK_BOT_TOKEN,
   slackSigningSecret: process.env.SLACK_SIGNING_SECRET,
   port: process.env.PORT || '8080',
+  googleSearchCseId: process.env.GOOGLE_SEARCH_CSE_ID,
+  googleSearchApiKey: process.env.GOOGLE_SEARCH_API_KEY,
 };
 
 export function validateEnv(env: Env): void {
