@@ -10,6 +10,22 @@ const customSearch = google.customsearch('v1');
 const strpad = (str: string, count: number): string =>
   new Array(count + 1).join(str);
 
+async function googleImage(query: string): Promise<string> {
+  const res = await customSearch.cse.list({
+    cx: env.googleSearchCseId,
+    auth: env.googleSearchApiKey,
+    q: query,
+    searchType: 'image',
+    safe: 'high',
+    fields: 'items(link)',
+  });
+  if (res.status !== 200) {
+    throw new Error(`Bad HTTP response. status: ${res.status}`);
+  }
+  const item = random(res.data.items);
+  return item.link;
+}
+
 export const reactions: Array<BotReaction> = [
   {
     pattern: /^zoi$|^ぞい$|がんばるぞい$|頑張るぞい$/i,
@@ -50,21 +66,23 @@ export const reactions: Array<BotReaction> = [
     pattern: /image (.+)$/i,
     reaction: async (send, matched: Array<string>): Promise<void> => {
       const query = matched[1];
-      const res = await customSearch.cse.list({
-        cx: env.googleSearchCseId,
-        auth: env.googleSearchApiKey,
-        q: query,
-        searchType: 'image',
-        safe: 'high',
-        fields: 'items(link)',
-      });
-      if (res.status !== 200) {
-        send(`Bad HTTP response. status: ${res.status}`);
-        return;
-      }
-      const item = random(res.data.items);
-      send(item.link);
+      const linkOrErrorMessage = await googleImage(query).catch(
+        (e: Error) => e.message,
+      );
+      send(linkOrErrorMessage);
     },
     help: (b: string): string => `${b} image hoge - Google Image`,
+  },
+  {
+    pattern: /^di (.+)$/i,
+    reaction: async (send, matched: Array<string>): Promise<void> => {
+      const query = matched[1];
+      const linkOrErrorMessage = await googleImage(query).catch(
+        (e: Error) => e.message,
+      );
+      send(linkOrErrorMessage);
+    },
+    alsoNotMentioned: true,
+    help: (): string => `di hoge - Google Image`,
   },
 ];
