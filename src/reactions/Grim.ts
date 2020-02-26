@@ -8,7 +8,7 @@ const strpad = (str: string, count: number): string =>
 
 export const reactions: Array<BotReaction> = [
   {
-    pattern: /[^zoi$|^ぞい$|がんばるぞい$|頑張るぞい$]/i,
+    pattern: /^zoi$|^ぞい$|がんばるぞい$|頑張るぞい$/i,
     reaction: async (send): Promise<void> => {
       const targets = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3];
       const selected = random(targets);

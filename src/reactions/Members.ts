@@ -71,7 +71,7 @@ export const reactions: Array<BotReaction> = [
     reaction: async (send): Promise<void> => {
       send(random(isaos)());
     },
-    help: (b: string): string => `${b} goma - やればわかる`,
+    help: (b: string): string => `${b} isao - やればわかる`,
   },
   {
     pattern: /KIRIN (\d+)$/i,
