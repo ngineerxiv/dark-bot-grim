@@ -6,6 +6,8 @@ import {
 } from '@slack/bolt';
 import { Reactions } from './Reaction';
 
+import { apply as SlackDirectMentioned } from './slack/DirectMentioned';
+
 export async function init(
   botToken: string,
   signingSecret: string,
@@ -29,5 +31,7 @@ export async function init(
     });
     app.message(v.pattern, ...listeners);
   });
+
+  SlackDirectMentioned(app);
   return await app.start(eventPort);
 }
