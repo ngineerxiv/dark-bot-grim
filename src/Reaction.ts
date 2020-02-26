@@ -10,7 +10,7 @@ export interface BotReaction {
   help?: (bot: string) => string;
 }
 
-export const Reactions: Array<BotReaction> = (() => {
+export const Reactions: Array<BotReaction> = ((): Array<BotReaction> => {
   const r: Array<BotReaction> = [].concat(
     MemberReactions,
     DiagnosticsReactions,
