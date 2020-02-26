@@ -9,6 +9,7 @@ import { Reactions } from './Reaction';
 import { apply as SlackDirectMentioned } from './slack/DirectMentioned';
 import { Notification } from './slack/Notifications';
 import { env } from './Env';
+import { Timeline } from './slack/Timeline';
 
 export async function init(
   botToken: string,
@@ -41,5 +42,11 @@ export async function init(
     env.slackTeamJoinedNotifyTo,
   );
   notification.apply(app);
+
+  if (env.slackTimelinePostTo !== null) {
+    const blackList = env.slackTimelineBlackList.split(',').map(x => x.trim());
+    const timeline = new Timeline(env.slackTimelinePostTo, blackList);
+    timeline.apply(app);
+  }
   return await app.start(eventPort);
 }
