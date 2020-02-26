@@ -54,6 +54,9 @@ export const reactions: Array<BotReaction> = [
         cx: env.googleSearchCseId,
         auth: env.googleSearchApiKey,
         q: query,
+        searchType: 'image',
+        safe: 'high',
+        fields: 'items(link)',
       });
       if (res.status !== 200) {
         send(`Bad HTTP response. status: ${res.status}`);
