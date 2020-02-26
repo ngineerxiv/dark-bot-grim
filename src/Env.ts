@@ -9,7 +9,7 @@ interface Env {
   slackNewEmojiNotifyTo: SlackChannelId;
   slackTeamJoinedNotifyTo: SlackChannelId;
   slackTimelinePostTo: SlackChannelId | null;
-  slackTimelineBlackList: string;
+  slackTimelineBlackList: string | null;
 }
 
 type SlackChannelId = string;
@@ -25,7 +25,7 @@ export const env: Env = {
   slackNewEmojiNotifyTo: process.env.SLACK_NEW_EMOJI,
   slackTeamJoinedNotifyTo: process.env.SLACK_TEAM_JOINED,
   slackTimelinePostTo: process.env.SLACK_TIMELINE || null,
-  slackTimelineBlackList: process.env.SLACK_TIMELINE_BLACK_LIST,
+  slackTimelineBlackList: process.env.SLACK_TIMELINE_BLACK_LIST || null,
 };
 
 export function validateEnv(env: Env): void {

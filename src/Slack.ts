@@ -44,7 +44,10 @@ export async function init(
   notification.apply(app);
 
   if (env.slackTimelinePostTo !== null) {
-    const blackList = env.slackTimelineBlackList.split(',').map(x => x.trim());
+    const blackList =
+      env.slackTimelineBlackList === null
+        ? []
+        : env.slackTimelineBlackList.split(',').map(x => x.trim());
     const timeline = new Timeline(env.slackTimelinePostTo, blackList);
     timeline.apply(app);
   }
