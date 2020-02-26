@@ -1,10 +1,10 @@
-import uuid = require('uuid/v4');
+import { v4 } from 'uuid';
 
 export function applyCacheBuster(
   u: string,
   queryString: string = null,
 ): string {
-  const b = uuid();
+  const b = v4();
   if (queryString === null) {
     return `${u}?cb=${b}`;
   }
