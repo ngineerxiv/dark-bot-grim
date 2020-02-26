@@ -11,7 +11,7 @@ type SlackReaction = [
 
 const reactions: Array<SlackReaction> = [
   [
-    /^channel$|^チャンネル$/,
+    /channel$|チャンネル$/,
     async (arg: SlackEventMiddlewareArgs<'message'>): Promise<void> => {
       arg.say(`ここのチャンネルIDは ${arg.event.channel}`);
     },

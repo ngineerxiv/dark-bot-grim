@@ -4,7 +4,12 @@ interface Env {
   port: string;
   googleSearchCseId: string;
   googleSearchApiKey: string;
+  slackNewChannelNotifyTo: SlackChannelId;
+  slackNewEmojiNotifyTo: SlackChannelId;
+  slackTeamJoinedNotifyTo: SlackChannelId;
 }
+
+type SlackChannelId = string;
 
 export const env: Env = {
   slackBotToken: process.env.SLACK_BOT_TOKEN,
@@ -12,6 +17,9 @@ export const env: Env = {
   port: process.env.PORT || '8080',
   googleSearchCseId: process.env.GOOGLE_SEARCH_CSE_ID,
   googleSearchApiKey: process.env.GOOGLE_SEARCH_API_KEY,
+  slackNewChannelNotifyTo: process.env.SLACK_NEW_CHANNEL,
+  slackNewEmojiNotifyTo: process.env.SLACK_NEW_EMOJI,
+  slackTeamJoinedNotifyTo: process.env.SLACK_TEAM_JOINED,
 };
 
 export function validateEnv(env: Env): void {
