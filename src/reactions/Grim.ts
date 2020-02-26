@@ -30,7 +30,7 @@ export const reactions: Array<BotReaction> = [
       ].join('\n');
       send(suddenDeath);
     },
-    help: (b: string): string => `${b} zoi|ぞい - がんばるぞい`,
+    help: (b: string): string => `${b} 突然の 死 - 突然の死`,
   },
   {
     pattern: /選んで (.+)$/i,
