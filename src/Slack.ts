@@ -7,6 +7,8 @@ import {
 import { Reactions } from './Reaction';
 
 import { apply as SlackDirectMentioned } from './slack/DirectMentioned';
+import { Notification } from './slack/Notifications';
+import { env } from './Env';
 
 export async function init(
   botToken: string,
@@ -33,5 +35,11 @@ export async function init(
   });
 
   SlackDirectMentioned(app);
+  const notification = new Notification(
+    env.slackNewChannelNotifyTo,
+    env.slackNewEmojiNotifyTo,
+    env.slackTeamJoinedNotifyTo,
+  );
+  notification.apply(app);
   return await app.start(eventPort);
 }
