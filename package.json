@@ -17,6 +17,7 @@
     "@slack/bolt": "^1.5.0",
     "@types/node": "^13.7.6",
     "@types/uuid": "7.0.0",
+    "eastasianwidth": "^0.2.0",
     "typescript": "^3.8.2",
     "uuid": "7.0.1"
   },
