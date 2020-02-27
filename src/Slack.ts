@@ -52,7 +52,7 @@ export async function init(
     const timeline = new Timeline(
       env.slackTimelinePostTo,
       blackList,
-      new SlackClientImpl(app),
+      new SlackClientImpl(app, env.slackBotToken),
       new TimelineRepositoryOnMemory(),
     );
     app.event(

@@ -18,7 +18,6 @@ export interface SlackClient {
   fetchUsers(): Promise<Map<string, User>>;
 
   postMessage(
-    token: string,
     channel: string,
     text: string,
     userName: string,
@@ -28,16 +27,20 @@ export interface SlackClient {
 
 export class SlackClientImpl implements SlackClient {
   readonly app: SlackApp;
-  constructor(app: SlackApp) {
+  readonly token: string;
+  constructor(app: SlackApp, botToken: string) {
     this.app = app;
+    this.token = botToken;
   }
 
   async fetchUsers(): Promise<Map<string, User>> {
-    const users = await this.app.client.users.list();
+    const users = await this.app.client.users.list({
+      token: this.token,
+    });
     if (!users.ok) {
       throw new Error(users.error);
     }
-    const members: Array<SlackUser> = users.member as Array<SlackUser>;
+    const members: Array<SlackUser> = users.members as Array<SlackUser>;
     return new Map(
       members.map((m): [string, User] => {
         return [
@@ -52,7 +55,6 @@ export class SlackClientImpl implements SlackClient {
     );
   }
   async postMessage(
-    token: string,
     channel: string,
     text: string,
     userName: string,
@@ -60,7 +62,7 @@ export class SlackClientImpl implements SlackClient {
   ): Promise<void> {
     /* eslint-disable @typescript-eslint/camelcase */
     await this.app.client.chat.postMessage({
-      token: token,
+      token: this.token,
       channel: channel,
       text: text,
       username: userName,

@@ -7,11 +7,11 @@ class Message {
   readonly text: string;
   readonly ts: MessageID;
 
-  constructor(e: MessageEvent, context: Context) {
-    this.channel = context.channel;
-    this.user = e.user;
-    this.text = e.text;
-    this.ts = e.ts;
+  constructor(channel: string, user: string, text: string, ts: string) {
+    this.channel = channel;
+    this.user = user;
+    this.text = text;
+    this.ts = ts;
   }
 
   isPrivate(): boolean {
@@ -72,24 +72,23 @@ export class Timeline {
     this.usersCache = new Map();
   }
 
-  async apply(event: MessageEvent, context: Context): Promise<void> {
+  // FIXME @slack/boltに依存しない形にしてテストしたい
+  async apply(event: MessageEvent): Promise<void> {
     if (event.subtype === 'message_deleted') {
       // TODO
       return;
     }
 
     if (event.subtype !== undefined) {
-      // TODO
-      // @see https://api.slack.com/events/message
       return;
     }
 
-    if (event.edited !== undefined) {
-      // TODO
-      return;
-    }
-
-    const message = new Message(event, context);
+    const message = new Message(
+      event.channel,
+      event.user,
+      event.text,
+      event.ts,
+    );
     if (message.isBlackListed(this.blackListChannelIDs)) {
       return;
     }
@@ -97,17 +96,8 @@ export class Timeline {
       return;
     }
 
-    let user = this.usersCache.get(event.user);
-    if (user === undefined) {
-      this.usersCache = await this.slackClient.fetchUsers();
-      user = this.usersCache.get(event.user);
-      if (user === undefined) {
-        throw new Error(`User is not found. id = ${event.user}`);
-      }
-    }
-
+    const user = await this.fetchUser(message.user);
     await this.slackClient.postMessage(
-      context.botToken,
       this.timelineChannelID,
       `${event.text} (at <#${event.channel}>)`,
       user.name,
@@ -115,5 +105,17 @@ export class Timeline {
     );
 
     this.timelineRepository.put(message);
+  }
+
+  private async fetchUser(id: string): Promise<User> {
+    let user = this.usersCache.get(id);
+    if (user === undefined) {
+      this.usersCache = await this.slackClient.fetchUsers();
+      user = this.usersCache.get(id);
+      if (user === undefined) {
+        throw new Error(`User is not found. id = ${id}`);
+      }
+    }
+    return user;
   }
 }
