@@ -47,7 +47,7 @@ export class TimelineService {
     if (m.channel === this.timelineChannelID) {
       return;
     }
-    const message = this.timelineRepository.fetch(m.deletedTs);
+    const message = await this.timelineRepository.fetch(m.deletedTs);
     if (message === null) {
       // TODO logger
       console.info(`Message Not Found. ts = ${m.deletedTs}`);

@@ -6,11 +6,15 @@ import {
   MessageEvent,
   MessageDeletedEvent,
 } from '@slack/bolt';
+import * as redis from 'redis';
 import { Reactions } from './Reaction';
 
 import { Notification } from './slack/NotificationService';
 import { SlackClientImpl, SlackClient } from './slack/SlackClient';
-import { TimelineRepositoryOnMemory } from './slack/TimelineRepository';
+import {
+  TimelineRepositoryOnMemory,
+  TimelineRepositoryOnRedis,
+} from './slack/TimelineRepository';
 import { TimelineService } from './slack/TimelineService';
 import { Env } from './Env';
 
@@ -53,6 +57,11 @@ function initNotification(app: App, env: Env, slackClient: SlackClient): void {
 }
 
 function initTimeline(app: App, env: Env, slackClient: SlackClient): void {
+  const redisClient = redis.createClient(env.redisUrl);
+  redisClient.on('error', err => {
+    console.error(err);
+  });
+
   const blackList =
     env.slackTimelineBlackList === null
       ? []
@@ -61,7 +70,7 @@ function initTimeline(app: App, env: Env, slackClient: SlackClient): void {
     env.slackTimelinePostTo,
     blackList,
     slackClient,
-    new TimelineRepositoryOnMemory(),
+    new TimelineRepositoryOnRedis(redisClient),
   );
   app.event(
     'message',
