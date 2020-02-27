@@ -99,19 +99,20 @@ function initSlackOnlyFunction(app: App, env: Env): void {
     /joinall$/,
     ...[
       directMention(),
-      async ({
-        event,
-        say,
-      }: SlackEventMiddlewareArgs<'message'>): Promise<void> => {
+      async ({ say }: SlackEventMiddlewareArgs<'message'>): Promise<void> => {
         const channelsResponse = await app.client.conversations.list({
           token: env.slackBotToken,
         });
         const channels = channelsResponse.channels as {
           id: string;
           name: string;
+          is_channel: boolean;
+          is_archived: boolean;
           is_member: boolean;
         }[];
-        const notMember = channels.filter(x => !x.is_member);
+        const notMember = channels.filter(
+          x => !x.is_member && !x.is_archived && x.is_channel,
+        );
         if (notMember.length === 0) {
           say(`入っていないチャンネルはないよ`);
           return;
