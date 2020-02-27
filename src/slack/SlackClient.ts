@@ -1,21 +1,5 @@
 import { App as SlackApp } from '@slack/bolt';
-import { MessageID } from './Timeline';
-
-export interface User {
-  id: string;
-  name: string;
-  profile: string;
-  isBot: boolean;
-}
-
-interface SlackUser {
-  id: string;
-  name: string;
-  profile: {
-    image_48: string;
-  };
-  is_bot: boolean;
-}
+import { MessageID, SlackUser, User } from './Domain';
 
 export interface SlackClient {
   fetchUsers(): Promise<Map<string, User>>;

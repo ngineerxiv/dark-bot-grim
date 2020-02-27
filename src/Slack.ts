@@ -11,8 +11,9 @@ import { Reactions } from './Reaction';
 import { apply as SlackDirectMentioned } from './slack/DirectMentioned';
 import { Notification } from './slack/Notifications';
 import { env } from './Env';
-import { Timeline, TimelineRepositoryOnMemory } from './slack/Timeline';
 import { SlackClientImpl } from './slack/SlackClient';
+import { TimelineRepositoryOnMemory } from './slack/TimelineRepository';
+import { TimelineService } from './slack/TimelineService';
 
 export async function init(
   botToken: string,
@@ -51,7 +52,7 @@ export async function init(
       env.slackTimelineBlackList === null
         ? []
         : env.slackTimelineBlackList.split(',').map(x => x.trim());
-    const timeline = new Timeline(
+    const timeline = new TimelineService(
       env.slackTimelinePostTo,
       blackList,
       new SlackClientImpl(app, env.slackBotToken),
