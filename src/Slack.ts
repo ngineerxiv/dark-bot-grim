@@ -48,7 +48,11 @@ function initNotification(app: App, env: Env, slackClient: SlackClient): void {
       if (event.subtype !== 'add') {
         return;
       }
-      return notification.notifyNewEmoji(event.name);
+      return notification.notifyNewEmoji(event.name).catch(e => {
+        // TODO sentry
+        console.error('Error Occured in notification');
+        console.error(e);
+      });
     },
   );
 }
@@ -76,7 +80,11 @@ function initTimeline(app: App, env: Env, slackClient: SlackClient): void {
     }: {
       event: MessageEvent | MessageDeletedEvent;
     }): Promise<void> => {
-      timeline.apply(event);
+      timeline.apply(event).catch(e => {
+        // TODO sentry
+        console.error('Error Occured in timeline');
+        console.error(e);
+      });
     },
   );
 }
