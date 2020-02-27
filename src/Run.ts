@@ -8,7 +8,7 @@ async function main(): Promise<void> {
   redisClient.on('error', err => {
     console.error(err);
   });
-  await slackInit(env.slackBotToken, env.slackSigningSecret, env.port);
+  await slackInit(env);
   console.log(`Slack Event Application started with port ${env.port}`);
 }
 

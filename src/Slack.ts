@@ -8,26 +8,94 @@ import {
 } from '@slack/bolt';
 import { Reactions } from './Reaction';
 
-import { apply as SlackDirectMentioned } from './slack/DirectMentioned';
 import { Notification } from './slack/Notifications';
-import { env } from './Env';
-import { SlackClientImpl } from './slack/SlackClient';
+import { SlackClientImpl, SlackClient } from './slack/SlackClient';
 import { TimelineRepositoryOnMemory } from './slack/TimelineRepository';
 import { TimelineService } from './slack/TimelineService';
+import { Env } from './Env';
 
-export async function init(
-  botToken: string,
-  signingSecret: string,
-  eventPort: string,
-): Promise<unknown> {
+function initNotification(app: App, env: Env, slackClient: SlackClient): void {
+  const notification = new Notification(
+    env.slackNewChannelNotifyTo,
+    env.slackNewEmojiNotifyTo,
+    env.slackTeamJoinedNotifyTo,
+    slackClient,
+  );
+
+  app.event(
+    'channel_created',
+    async ({ event }): Promise<void> => {
+      return notification.notifyNewChannel(
+        event.channel.id,
+        event.channel.name,
+      );
+    },
+  );
+
+  app.event(
+    'team_join',
+    async ({ event }): Promise<void> => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const user: any = event.user;
+      return notification.notifyTeamJoin(user.id);
+    },
+  );
+
+  app.event(
+    'emoji_changed',
+    async ({ event }): Promise<void> => {
+      if (event.subtype !== 'add') {
+        return;
+      }
+      return notification.notifyNewEmoji(event.name);
+    },
+  );
+}
+
+function initTimeline(app: App, env: Env, slackClient: SlackClient): void {
+  const blackList =
+    env.slackTimelineBlackList === null
+      ? []
+      : env.slackTimelineBlackList.split(',').map(x => x.trim());
+  const timeline = new TimelineService(
+    env.slackTimelinePostTo,
+    blackList,
+    slackClient,
+    new TimelineRepositoryOnMemory(),
+  );
+  app.event(
+    'message',
+    async ({
+      event,
+    }: {
+      event: MessageEvent | MessageDeletedEvent;
+    }): Promise<void> => {
+      timeline.apply(event);
+    },
+  );
+}
+
+function initSlackOnlyFunction(app: App): void {
+  app.message(
+    /channel$|チャンネル$/,
+    ...[
+      directMention(),
+      async ({
+        event,
+        say,
+      }: SlackEventMiddlewareArgs<'message'>): Promise<void> => {
+        say(`ここのチャンネルIDは ${event.channel}`);
+      },
+    ],
+  );
+}
+
+export async function init(env: Env): Promise<unknown> {
   const app = new App({
-    token: botToken,
-    signingSecret: signingSecret,
+    token: env.slackBotToken,
+    signingSecret: env.slackSigningSecret,
   });
-
-  app.error(e => {
-    console.error(e);
-  });
+  const slackClient = new SlackClientImpl(app, env.slackBotToken);
 
   Reactions.forEach(v => {
     const listeners: Array<Middleware<SlackEventMiddlewareArgs<'message'>>> =
@@ -39,35 +107,14 @@ export async function init(
     app.message(v.pattern, ...listeners);
   });
 
-  SlackDirectMentioned(app);
-  const notification = new Notification(
-    env.slackNewChannelNotifyTo,
-    env.slackNewEmojiNotifyTo,
-    env.slackTeamJoinedNotifyTo,
-  );
-  notification.apply(app);
-
+  initSlackOnlyFunction(app);
+  initNotification(app, env, slackClient);
   if (env.slackTimelinePostTo !== null) {
-    const blackList =
-      env.slackTimelineBlackList === null
-        ? []
-        : env.slackTimelineBlackList.split(',').map(x => x.trim());
-    const timeline = new TimelineService(
-      env.slackTimelinePostTo,
-      blackList,
-      new SlackClientImpl(app, env.slackBotToken),
-      new TimelineRepositoryOnMemory(),
-    );
-    app.event(
-      'message',
-      async ({
-        event,
-      }: {
-        event: MessageEvent | MessageDeletedEvent;
-      }): Promise<void> => {
-        timeline.apply(event);
-      },
-    );
+    initTimeline(app, env, slackClient);
   }
-  return await app.start(eventPort);
+
+  app.error(e => {
+    console.error(e);
+  });
+  return await app.start(env.port);
 }

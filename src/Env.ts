@@ -1,4 +1,4 @@
-interface Env {
+export interface Env {
   slackBotToken: string;
   slackSigningSecret: string;
   redisUrl: string;
