@@ -4,12 +4,13 @@ import { MessageID, SlackUser, User } from './Domain';
 export interface SlackClient {
   fetchUsers(): Promise<Map<string, User>>;
 
-  postMessage(
-    channel: string,
-    text: string,
-    userName: string,
-    iconUrl: string,
-  ): Promise<MessageID>;
+  postMessage(arg: {
+    channel: string;
+    text: string;
+    userName: string;
+    iconUrl?: string;
+    iconEmoji?: string;
+  }): Promise<MessageID>;
 
   deleteMessage(channel: string, ts: string): Promise<void>;
 }
@@ -44,21 +45,33 @@ export class SlackClientImpl implements SlackClient {
       }),
     );
   }
-  async postMessage(
-    channel: string,
-    text: string,
-    userName: string,
-    iconUrl: string,
-  ): Promise<MessageID> {
+  async postMessage(arg: {
+    channel: string;
+    text: string;
+    userName: string;
+    iconUrl?: string;
+    iconEmoji?: string;
+  }): Promise<MessageID> {
     /* eslint-disable @typescript-eslint/camelcase */
+    let icon = {};
+    if (arg.iconUrl !== undefined) {
+      icon = {
+        icon_url: arg.iconUrl,
+      };
+    }
+    if (arg.iconEmoji !== undefined) {
+      icon = {
+        icon_emoji: arg.iconEmoji,
+      };
+    }
     const response = await this.app.client.chat.postMessage({
       token: this.token,
-      channel: channel,
-      text: text,
-      username: userName,
+      channel: arg.channel,
+      text: arg.text,
+      username: arg.userName,
       as_user: false,
-      icon_url: iconUrl,
       link_names: false,
+      ...icon,
     });
     /* eslint-enable @typescript-eslint/camelcase */
 
