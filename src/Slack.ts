@@ -11,10 +11,7 @@ import { Reactions } from './Reaction';
 
 import { Notification } from './slack/NotificationService';
 import { SlackClientImpl, SlackClient } from './slack/SlackClient';
-import {
-  TimelineRepositoryOnMemory,
-  TimelineRepositoryOnRedis,
-} from './slack/TimelineRepository';
+import { TimelineRepositoryOnRedis } from './slack/TimelineRepository';
 import { TimelineService } from './slack/TimelineService';
 import { Env } from './Env';
 
@@ -84,7 +81,7 @@ function initTimeline(app: App, env: Env, slackClient: SlackClient): void {
   );
 }
 
-function initSlackOnlyFunction(app: App): void {
+function initSlackOnlyFunction(app: App, env: Env): void {
   app.message(
     /channel$|チャンネル$/,
     ...[
@@ -94,6 +91,40 @@ function initSlackOnlyFunction(app: App): void {
         say,
       }: SlackEventMiddlewareArgs<'message'>): Promise<void> => {
         say(`ここのチャンネルIDは ${event.channel}`);
+      },
+    ],
+  );
+
+  app.message(
+    /joinall$/,
+    ...[
+      directMention(),
+      async ({
+        event,
+        say,
+      }: SlackEventMiddlewareArgs<'message'>): Promise<void> => {
+        const channelsResponse = await app.client.conversations.list({
+          token: env.slackBotToken,
+        });
+        const channels = channelsResponse.channels as {
+          id: string;
+          name: string;
+          is_member: boolean;
+        }[];
+        const notMember = channels.filter(x => !x.is_member);
+        if (notMember.length === 0) {
+          say(`入っていないチャンネルはないよ`);
+          return;
+        }
+
+        const cs = notMember.map(x => x.name).join(', ');
+        say(`入っていないチャンネルは${cs}なので入っていくよ`);
+        notMember.forEach(async c => {
+          await app.client.conversations.join({
+            token: env.slackBotToken,
+            channel: c.id,
+          });
+        });
       },
     ],
   );
@@ -116,7 +147,7 @@ export async function init(env: Env): Promise<unknown> {
     app.message(v.pattern, ...listeners);
   });
 
-  initSlackOnlyFunction(app);
+  initSlackOnlyFunction(app, env);
   initNotification(app, env, slackClient);
   if (env.slackTimelinePostTo !== null) {
     initTimeline(app, env, slackClient);
