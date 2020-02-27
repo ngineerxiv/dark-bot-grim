@@ -144,7 +144,7 @@ export async function init(env: Env): Promise<unknown> {
     token: env.slackBotToken,
     signingSecret: env.slackSigningSecret,
   });
-  const slackClient = new SlackClientImpl(app, env.slackUserToken);
+  const slackClient = new SlackClientImpl(app, env.slackBotToken);
 
   Reactions.forEach(v => {
     const listeners: Array<Middleware<SlackEventMiddlewareArgs<'message'>>> =
