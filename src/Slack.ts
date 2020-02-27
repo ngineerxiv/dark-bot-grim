@@ -8,7 +8,7 @@ import {
 } from '@slack/bolt';
 import { Reactions } from './Reaction';
 
-import { Notification } from './slack/Notifications';
+import { Notification } from './slack/NotificationService';
 import { SlackClientImpl, SlackClient } from './slack/SlackClient';
 import { TimelineRepositoryOnMemory } from './slack/TimelineRepository';
 import { TimelineService } from './slack/TimelineService';

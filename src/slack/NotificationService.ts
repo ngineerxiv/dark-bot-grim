@@ -1,4 +1,3 @@
-import { App as SlackApp } from '@slack/bolt';
 import { SlackClient } from './SlackClient';
 
 export class Notification {
