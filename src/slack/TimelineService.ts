@@ -80,12 +80,12 @@ export class TimelineService {
       return;
     }
 
-    const messageId = await this.slackClient.postMessage(
-      this.timelineChannelID,
-      `${message.text} (at <#${message.channel}>)`,
-      user.name,
-      user.profile,
-    );
+    const messageId = await this.slackClient.postMessage({
+      channel: this.timelineChannelID,
+      text: `${message.text} (at <#${message.channel}>)`,
+      userName: user.name,
+      iconUrl: user.profile,
+    });
 
     this.timelineRepository.put(message.withId(messageId));
   }
