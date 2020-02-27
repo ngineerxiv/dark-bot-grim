@@ -69,7 +69,6 @@ export class SlackClientImpl implements SlackClient {
       channel: arg.channel,
       text: arg.text,
       username: arg.userName,
-      as_user: false,
       link_names: false,
       ...icon,
     });
