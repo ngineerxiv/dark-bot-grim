@@ -3,6 +3,8 @@ import {
   directMention,
   Middleware,
   SlackEventMiddlewareArgs,
+  MessageEvent,
+  MessageDeletedEvent,
 } from '@slack/bolt';
 import { Reactions } from './Reaction';
 
@@ -57,8 +59,12 @@ export async function init(
     );
     app.event(
       'message',
-      async ({ event, context }): Promise<void> => {
-        timeline.apply(event, context);
+      async ({
+        event,
+      }: {
+        event: MessageEvent | MessageDeletedEvent;
+      }): Promise<void> => {
+        timeline.apply(event);
       },
     );
   }

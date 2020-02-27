@@ -1,9 +1,11 @@
 import { App as SlackApp } from '@slack/bolt';
+import { MessageID } from './Timeline';
 
 export interface User {
   id: string;
   name: string;
   profile: string;
+  isBot: boolean;
 }
 
 interface SlackUser {
@@ -12,6 +14,7 @@ interface SlackUser {
   profile: {
     image_48: string;
   };
+  is_bot: boolean;
 }
 
 export interface SlackClient {
@@ -22,7 +25,9 @@ export interface SlackClient {
     text: string,
     userName: string,
     iconUrl: string,
-  ): Promise<void>;
+  ): Promise<MessageID>;
+
+  deleteMessage(channel: string, ts: string): Promise<void>;
 }
 
 export class SlackClientImpl implements SlackClient {
@@ -49,6 +54,7 @@ export class SlackClientImpl implements SlackClient {
             id: m.id,
             name: m.name,
             profile: m.profile.image_48,
+            isBot: m.is_bot,
           },
         ];
       }),
@@ -59,9 +65,9 @@ export class SlackClientImpl implements SlackClient {
     text: string,
     userName: string,
     iconUrl: string,
-  ): Promise<void> {
+  ): Promise<MessageID> {
     /* eslint-disable @typescript-eslint/camelcase */
-    await this.app.client.chat.postMessage({
+    const response = await this.app.client.chat.postMessage({
       token: this.token,
       channel: channel,
       text: text,
@@ -72,6 +78,17 @@ export class SlackClientImpl implements SlackClient {
     });
     /* eslint-enable @typescript-eslint/camelcase */
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const message: any = response.message;
+    return message.ts;
+  }
+
+  async deleteMessage(channel: string, ts: string): Promise<void> {
+    await this.app.client.chat.delete({
+      token: this.token,
+      channel: channel,
+      ts: ts,
+    });
     return;
   }
 }

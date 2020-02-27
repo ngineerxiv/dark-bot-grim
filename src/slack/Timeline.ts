@@ -1,11 +1,12 @@
-import { MessageEvent, Context } from '@slack/bolt';
+import { MessageEvent, MessageDeletedEvent } from '@slack/bolt';
 import { SlackClient, User } from './SlackClient';
 
 class Message {
   readonly channel: string;
   readonly user: string;
   readonly text: string;
-  readonly ts: MessageID;
+  readonly ts: string;
+  timelineMessageTs?: MessageID;
 
   constructor(channel: string, user: string, text: string, ts: string) {
     this.channel = channel;
@@ -21,29 +22,43 @@ class Message {
   isBlackListed(list: Array<string>): boolean {
     return list.includes(this.channel);
   }
+
+  isSameChannel(timelineChannelID: string): boolean {
+    return this.channel === timelineChannelID;
+  }
+
+  withId(id: MessageID): Required<Message> {
+    this.timelineMessageTs = id;
+    return this as Required<Message>;
+  }
 }
 
-type MessageID = string;
+export type MessageID = string;
+
+interface DeletedMessage {
+  channel: string;
+  deletedTs: MessageID;
+}
 
 interface TimelineRepository {
-  put(m: Message): void;
+  put(m: Required<Message>): void;
 
-  fetch(id: MessageID): Message | null;
+  fetch(id: MessageID): Required<Message> | null;
 
   delete(id: MessageID): void;
 }
 
 export class TimelineRepositoryOnMemory implements TimelineRepository {
-  readonly data: Map<MessageID, Message>;
+  readonly data: Map<MessageID, Required<Message>>;
 
   constructor() {
     this.data = new Map();
   }
 
-  put(m: Message): void {
+  put(m: Required<Message>): void {
     this.data.set(m.ts, m);
   }
-  fetch(id: MessageID): Message | null {
+  fetch(id: MessageID): Required<Message> | null {
     const m = this.data.get(id);
     return m === undefined ? null : m;
   }
@@ -73,22 +88,45 @@ export class Timeline {
   }
 
   // FIXME @slack/boltに依存しない形にしてテストしたい
-  async apply(event: MessageEvent): Promise<void> {
-    if (event.subtype === 'message_deleted') {
-      // TODO
+  async apply(event: MessageEvent | MessageDeletedEvent): Promise<void> {
+    switch (event.subtype) {
+      case 'message_deleted':
+        this.deleteMessage({
+          channel: event.channel,
+          deletedTs: event.deleted_ts,
+        });
+        break;
+      case undefined:
+        this.postMessage(
+          new Message(event.channel, event.user, event.text, event.ts),
+        );
+        break;
+      default:
+        console.info(`Not handled subtype. ${event.subtype}`);
+        break;
+    }
+  }
+
+  private async deleteMessage(m: DeletedMessage): Promise<void> {
+    if (m.channel === this.timelineChannelID) {
+      return;
+    }
+    const message = this.timelineRepository.fetch(m.deletedTs);
+    if (message === null) {
+      // TODO logger
+      console.info(`Message Not Found. ts = ${m.deletedTs}`);
       return;
     }
 
-    if (event.subtype !== undefined) {
-      return;
-    }
-
-    const message = new Message(
-      event.channel,
-      event.user,
-      event.text,
-      event.ts,
+    await this.slackClient.deleteMessage(
+      this.timelineChannelID,
+      message.timelineMessageTs,
     );
+    this.timelineRepository.delete(message.ts);
+    return;
+  }
+
+  private async postMessage(message: Message): Promise<void> {
     if (message.isBlackListed(this.blackListChannelIDs)) {
       return;
     }
@@ -96,15 +134,24 @@ export class Timeline {
       return;
     }
 
+    if (message.isSameChannel(this.timelineChannelID)) {
+      return;
+    }
+
     const user = await this.fetchUser(message.user);
-    await this.slackClient.postMessage(
+
+    if (user.isBot) {
+      return;
+    }
+
+    const messageId = await this.slackClient.postMessage(
       this.timelineChannelID,
-      `${event.text} (at <#${event.channel}>)`,
+      `${message.text} (at <#${message.channel}>)`,
       user.name,
       user.profile,
     );
 
-    this.timelineRepository.put(message);
+    this.timelineRepository.put(message.withId(messageId));
   }
 
   private async fetchUser(id: string): Promise<User> {
