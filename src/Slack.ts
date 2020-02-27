@@ -3,12 +3,17 @@ import {
   directMention,
   Middleware,
   SlackEventMiddlewareArgs,
+  MessageEvent,
+  MessageDeletedEvent,
 } from '@slack/bolt';
 import { Reactions } from './Reaction';
 
 import { apply as SlackDirectMentioned } from './slack/DirectMentioned';
 import { Notification } from './slack/Notifications';
 import { env } from './Env';
+import { SlackClientImpl } from './slack/SlackClient';
+import { TimelineRepositoryOnMemory } from './slack/TimelineRepository';
+import { TimelineService } from './slack/TimelineService';
 
 export async function init(
   botToken: string,
@@ -41,5 +46,28 @@ export async function init(
     env.slackTeamJoinedNotifyTo,
   );
   notification.apply(app);
+
+  if (env.slackTimelinePostTo !== null) {
+    const blackList =
+      env.slackTimelineBlackList === null
+        ? []
+        : env.slackTimelineBlackList.split(',').map(x => x.trim());
+    const timeline = new TimelineService(
+      env.slackTimelinePostTo,
+      blackList,
+      new SlackClientImpl(app, env.slackBotToken),
+      new TimelineRepositoryOnMemory(),
+    );
+    app.event(
+      'message',
+      async ({
+        event,
+      }: {
+        event: MessageEvent | MessageDeletedEvent;
+      }): Promise<void> => {
+        timeline.apply(event);
+      },
+    );
+  }
   return await app.start(eventPort);
 }
