@@ -6,7 +6,7 @@
   "author": "ngineerxiv@gmail.com",
   "license": "MIT",
   "engines": {
-      "node": "12.16.1"
+    "node": "12.16.1"
   },
   "scripts": {
     "fix": "npm run prettier:fix && npm run eslint:fix",
@@ -19,9 +19,11 @@
   "dependencies": {
     "@slack/bolt": "^1.6.0",
     "@types/node": "^13.7.6",
+    "@types/redis": "^2.8.16",
     "@types/uuid": "7.0.0",
     "eastasianwidth": "^0.2.0",
     "googleapis": "^47.0.0",
+    "redis": "^3.0.2",
     "typescript": "^3.8.2",
     "uuid": "7.0.1"
   },

@@ -1,6 +1,7 @@
 interface Env {
   slackBotToken: string;
   slackSigningSecret: string;
+  redisUrl: string;
   port: string;
   googleSearchCseId: string;
   googleSearchApiKey: string;
@@ -14,6 +15,7 @@ type SlackChannelId = string;
 export const env: Env = {
   slackBotToken: process.env.SLACK_BOT_TOKEN,
   slackSigningSecret: process.env.SLACK_SIGNING_SECRET,
+  redisUrl: process.env.REDIS_URL,
   port: process.env.PORT || '8080',
   googleSearchCseId: process.env.GOOGLE_SEARCH_CSE_ID,
   googleSearchApiKey: process.env.GOOGLE_SEARCH_API_KEY,
