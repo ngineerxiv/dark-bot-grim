@@ -13,11 +13,20 @@ export interface SlackClient {
   }): Promise<MessageID>;
 
   deleteMessage(channel: string, ts: string): Promise<void>;
+
+  postTimelineMessage(
+    channel: string,
+    text: string,
+    originalChannel: string,
+    userName: string,
+    iconUrl: string,
+  ): Promise<MessageID>;
 }
 
 export class SlackClientImpl implements SlackClient {
   readonly app: SlackApp;
   readonly token: string;
+
   constructor(app: SlackApp, botToken: string) {
     this.app = app;
     this.token = botToken;
@@ -33,12 +42,19 @@ export class SlackClientImpl implements SlackClient {
     const members: Array<SlackUser> = users.members as Array<SlackUser>;
     return new Map(
       members.map((m): [string, User] => {
+        let profile = m.profile.image_512;
+        if (profile === '') {
+          profile = m.profile.image_192;
+        }
+        if (profile === '') {
+          profile = m.profile.image_48;
+        }
         return [
           m.id,
           {
             id: m.id,
             name: m.name,
-            profile: m.profile.image_48,
+            profile: profile,
             isBot: m.is_bot,
           },
         ];
@@ -72,7 +88,6 @@ export class SlackClientImpl implements SlackClient {
       link_names: false,
       ...icon,
     });
-    /* eslint-enable @typescript-eslint/camelcase */
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const message: any = response.message;
@@ -87,4 +102,49 @@ export class SlackClientImpl implements SlackClient {
     });
     return;
   }
+
+  async postTimelineMessage(
+    channel: string,
+    text: string,
+    originalChannel: string,
+    userName: string,
+    iconUrl: string,
+  ): Promise<string> {
+    const blocks = [
+      {
+        type: 'context',
+        elements: [
+          {
+            type: 'image',
+            image_url: iconUrl,
+            alt_text: userName,
+          },
+          {
+            type: 'mrkdwn',
+            text: `${userName} at <#${originalChannel}>`,
+          },
+        ],
+      },
+      {
+        type: 'section',
+        text: {
+          type: 'plain_text',
+          text: text,
+          emoji: true,
+        },
+      },
+    ];
+    const response = await this.app.client.chat.postMessage({
+      token: this.token,
+      channel: channel,
+      text: text,
+      blocks: blocks,
+      link_names: false,
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const message: any = response.message;
+    return message.ts;
+  }
 }
+/* eslint-enable @typescript-eslint/camelcase */

@@ -49,6 +49,8 @@ export interface SlackUser {
   name: string;
   profile: {
     image_48: string;
+    image_192: string;
+    image_512: string;
   };
   is_bot: boolean;
 }
