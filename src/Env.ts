@@ -11,6 +11,7 @@ export interface Env {
   slackTeamJoinedNotifyTo: SlackChannelId;
   slackTimelinePostTo: SlackChannelId | null;
   slackTimelineBlackList: string | null;
+  slackTeamDomain: string;
 }
 
 type SlackChannelId = string;
@@ -28,6 +29,7 @@ export const env: Env = {
   slackTeamJoinedNotifyTo: process.env.SLACK_TEAM_JOINED,
   slackTimelinePostTo: process.env.SLACK_TIMELINE || null,
   slackTimelineBlackList: process.env.SLACK_TIMELINE_BLACK_LIST || null,
+  slackTeamDomain: process.env.SLACK_TEAM_DOMAIN,
 };
 
 export function validateEnv(env: Env): void {

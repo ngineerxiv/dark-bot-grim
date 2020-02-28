@@ -1,5 +1,5 @@
 import { App as SlackApp } from '@slack/bolt';
-import { MessageID, SlackUser, User } from './Domain';
+import { MessageID, SlackUser, User, Message } from './Domain';
 
 export interface SlackClient {
   fetchUsers(): Promise<Map<string, User>>;
@@ -15,11 +15,9 @@ export interface SlackClient {
   deleteMessage(channel: string, ts: string): Promise<void>;
 
   postTimelineMessage(
-    channel: string,
-    text: string,
-    originalChannel: string,
-    userName: string,
-    iconUrl: string,
+    timelineChannelId: string,
+    message: Message,
+    user: User,
   ): Promise<MessageID>;
 
   postImageUrl(
@@ -33,10 +31,12 @@ export interface SlackClient {
 export class SlackClientImpl implements SlackClient {
   readonly app: SlackApp;
   readonly token: string;
+  readonly teamDomain: string;
 
-  constructor(app: SlackApp, botToken: string) {
+  constructor(app: SlackApp, botToken: string, teamDomain: string) {
     this.app = app;
     this.token = botToken;
+    this.teamDomain = teamDomain;
   }
 
   async fetchUsers(): Promise<Map<string, User>> {
@@ -111,24 +111,24 @@ export class SlackClientImpl implements SlackClient {
   }
 
   async postTimelineMessage(
-    channel: string,
-    text: string,
-    originalChannel: string,
-    userName: string,
-    iconUrl: string,
+    timelineChannelId: string,
+    message: Message,
+    user: User,
   ): Promise<string> {
+    const ts = message.ts.replace('.', '');
+    const link = `https://${this.teamDomain}.slack.com/archives/${message.channel}/p${ts}`;
     const blocks = [
       {
         type: 'context',
         elements: [
           {
             type: 'image',
-            image_url: iconUrl,
-            alt_text: userName,
+            image_url: user.profile,
+            alt_text: user.name,
           },
           {
             type: 'mrkdwn',
-            text: `${userName} at <#${originalChannel}>`,
+            text: `${user.name} at <#${message.channel}> <${link}|original>`,
           },
         ],
       },
@@ -136,22 +136,22 @@ export class SlackClientImpl implements SlackClient {
         type: 'section',
         text: {
           type: 'plain_text',
-          text: text,
+          text: message.text,
           emoji: true,
         },
       },
     ];
     const response = await this.app.client.chat.postMessage({
       token: this.token,
-      channel: channel,
-      text: text,
+      channel: timelineChannelId,
+      text: message.text,
       blocks: blocks,
       link_names: false,
     });
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const message: any = response.message;
-    return message.ts;
+    const sentMessage: any = response.message;
+    return sentMessage.ts;
   }
 
   async postImageUrl(
