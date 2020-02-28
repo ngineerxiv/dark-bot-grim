@@ -17,7 +17,6 @@ import { Env } from './Env';
 import { GoogleCustomSearch } from './util/Google';
 import { google } from 'googleapis';
 import { random } from './util/Random';
-import { link } from 'fs';
 
 function initNotification(app: App, env: Env, slackClient: SlackClient): void {
   const notification = new Notification(
