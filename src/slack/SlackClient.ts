@@ -140,6 +140,9 @@ export class SlackClientImpl implements SlackClient {
           emoji: true,
         },
       },
+      {
+        type: 'divider',
+      },
     ];
     const response = await this.app.client.chat.postMessage({
       token: this.token,
