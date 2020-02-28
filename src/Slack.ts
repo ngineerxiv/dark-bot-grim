@@ -183,7 +183,11 @@ export async function init(env: Env): Promise<unknown> {
     token: env.slackBotToken,
     signingSecret: env.slackSigningSecret,
   });
-  const slackClient = new SlackClientImpl(app, env.slackBotToken);
+  const slackClient = new SlackClientImpl(
+    app,
+    env.slackBotToken,
+    env.slackTeamDomain,
+  );
   const googleCustomSearch = new GoogleCustomSearch(
     env.googleSearchCseId,
     env.googleSearchApiKey,

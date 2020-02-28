@@ -1,4 +1,4 @@
-import { MessageEvent, MessageDeletedEvent } from '@slack/bolt';
+import { MessageEvent, MessageDeletedEvent, Context } from '@slack/bolt';
 import { SlackClient } from './SlackClient';
 import { TimelineRepository } from './TimelineRepository';
 import { Message, DeletedMessage, User } from './Domain';
@@ -82,10 +82,8 @@ export class TimelineService {
 
     const messageId = await this.slackClient.postTimelineMessage(
       this.timelineChannelID,
-      message.text,
-      message.channel,
-      user.name,
-      user.profile,
+      message,
+      user,
     );
 
     this.timelineRepository.put(message.withId(messageId));
