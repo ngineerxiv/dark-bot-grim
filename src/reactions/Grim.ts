@@ -1,30 +1,10 @@
 import * as eastasianwidth from 'eastasianwidth';
-import { google } from 'googleapis';
 import { BotReaction } from '../Reaction';
 import { random } from '../util/Random';
 import { applyCacheBuster } from '../util/Url';
-import { env } from '../Env';
-
-const customSearch = google.customsearch('v1');
 
 const strpad = (str: string, count: number): string =>
   new Array(count + 1).join(str);
-
-async function googleImage(query: string): Promise<string> {
-  const res = await customSearch.cse.list({
-    cx: env.googleSearchCseId,
-    auth: env.googleSearchApiKey,
-    q: query,
-    searchType: 'image',
-    safe: 'high',
-    fields: 'items(link)',
-  });
-  if (res.status !== 200) {
-    throw new Error(`Bad HTTP response. status: ${res.status}`);
-  }
-  const item = random(res.data.items);
-  return item.link;
-}
 
 export const reactions: Array<BotReaction> = [
   {
@@ -61,28 +41,5 @@ export const reactions: Array<BotReaction> = [
     },
     help: (b: string): string =>
       `${b} 選んで A B C - 空白やカンマ区切りのなにかから1つを選んでくれる`,
-  },
-  {
-    pattern: /image (.+)$/i,
-    reaction: async (send, matched: Array<string>): Promise<void> => {
-      const query = matched[1];
-      const linkOrErrorMessage = await googleImage(query).catch(
-        (e: Error) => e.message,
-      );
-      send(linkOrErrorMessage);
-    },
-    help: (b: string): string => `${b} image hoge - Google Image`,
-  },
-  {
-    pattern: /^di (.+)$/i,
-    reaction: async (send, matched: Array<string>): Promise<void> => {
-      const query = matched[1];
-      const linkOrErrorMessage = await googleImage(query).catch(
-        (e: Error) => e.message,
-      );
-      send(linkOrErrorMessage);
-    },
-    alsoNotMentioned: true,
-    help: (): string => `di hoge - Google Image`,
   },
 ];

@@ -14,6 +14,9 @@ import { SlackClientImpl, SlackClient } from './slack/SlackClient';
 import { TimelineRepositoryOnRedis } from './slack/TimelineRepository';
 import { TimelineService } from './slack/TimelineService';
 import { Env } from './Env';
+import { GoogleCustomSearch } from './util/Google';
+import { google } from 'googleapis';
+import { random } from './util/Random';
 
 function initNotification(app: App, env: Env, slackClient: SlackClient): void {
   const notification = new Notification(
@@ -89,7 +92,12 @@ function initTimeline(app: App, env: Env, slackClient: SlackClient): void {
   );
 }
 
-function initSlackOnlyFunction(app: App, env: Env): void {
+function initSlackOnlyFunction(
+  app: App,
+  env: Env,
+  slackClient: SlackClient,
+  googleCustomSearch: GoogleCustomSearch,
+): void {
   app.message(
     /channel$|チャンネル$/,
     ...[
@@ -137,6 +145,37 @@ function initSlackOnlyFunction(app: App, env: Env): void {
       },
     ],
   );
+
+  app.message(
+    /image (.+)$/i,
+    ...new Array<Middleware<SlackEventMiddlewareArgs<'message'>>>(
+      directMention(),
+      async ({ event, context, say }): Promise<void> => {
+        const query = context.matches[1];
+        await googleCustomSearch
+          .googleImage(query)
+          .then(is => {
+            slackClient.postImageUrl(event.channel, query, query, random(is));
+          })
+          .catch((e: Error) => say(e.message));
+      },
+    ),
+  );
+
+  app.message(
+    /^di (.+)$/i,
+    ...new Array<Middleware<SlackEventMiddlewareArgs<'message'>>>(
+      async ({ event, context, say }): Promise<void> => {
+        const query = context.matches[1];
+        await googleCustomSearch
+          .googleImage(query)
+          .then(is => {
+            slackClient.postImageUrl(event.channel, query, query, random(is));
+          })
+          .catch((e: Error) => say(e.message));
+      },
+    ),
+  );
 }
 
 export async function init(env: Env): Promise<unknown> {
@@ -145,6 +184,11 @@ export async function init(env: Env): Promise<unknown> {
     signingSecret: env.slackSigningSecret,
   });
   const slackClient = new SlackClientImpl(app, env.slackBotToken);
+  const googleCustomSearch = new GoogleCustomSearch(
+    env.googleSearchCseId,
+    env.googleSearchApiKey,
+    google.customsearch('v1'),
+  );
 
   Reactions.forEach(v => {
     const listeners: Array<Middleware<SlackEventMiddlewareArgs<'message'>>> =
@@ -156,7 +200,7 @@ export async function init(env: Env): Promise<unknown> {
     app.message(v.pattern, ...listeners);
   });
 
-  initSlackOnlyFunction(app, env);
+  initSlackOnlyFunction(app, env, slackClient, googleCustomSearch);
   initNotification(app, env, slackClient);
   if (env.slackTimelinePostTo !== null) {
     initTimeline(app, env, slackClient);
