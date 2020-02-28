@@ -21,6 +21,13 @@ export interface SlackClient {
     userName: string,
     iconUrl: string,
   ): Promise<MessageID>;
+
+  postImageUrl(
+    channel: string,
+    title: string,
+    altText: string,
+    imageUrl: string,
+  ): Promise<MessageID>;
 }
 
 export class SlackClientImpl implements SlackClient {
@@ -138,6 +145,36 @@ export class SlackClientImpl implements SlackClient {
       token: this.token,
       channel: channel,
       text: text,
+      blocks: blocks,
+      link_names: false,
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const message: any = response.message;
+    return message.ts;
+  }
+
+  async postImageUrl(
+    channel: string,
+    title: string,
+    altText: string,
+    imageUrl: string,
+  ): Promise<MessageID> {
+    const blocks = [
+      {
+        type: 'image',
+        title: {
+          type: 'plain_text',
+          text: title,
+        },
+        image_url: imageUrl,
+        alt_text: altText,
+      },
+    ];
+    const response = await this.app.client.chat.postMessage({
+      token: this.token,
+      channel: channel,
+      text: title,
       blocks: blocks,
       link_names: false,
     });
