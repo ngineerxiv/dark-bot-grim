@@ -51,7 +51,7 @@ function initNotification(app: App, env: Env, slackClient: SlackClient): void {
       if (event.subtype !== 'add') {
         return;
       }
-      return notification.notifyNewEmoji(event.name).catch(e => {
+      return notification.notifyNewEmoji(event.name).catch((e) => {
         // TODO sentry
         console.error('Error Occured in notification');
         console.error(e);
@@ -62,14 +62,14 @@ function initNotification(app: App, env: Env, slackClient: SlackClient): void {
 
 function initTimeline(app: App, env: Env, slackClient: SlackClient): void {
   const redisClient = redis.createClient(env.redisUrl);
-  redisClient.on('error', err => {
+  redisClient.on('error', (err) => {
     console.error(err);
   });
 
   const blackList =
     env.slackTimelineBlackList === null
       ? []
-      : env.slackTimelineBlackList.split(',').map(x => x.trim());
+      : env.slackTimelineBlackList.split(',').map((x) => x.trim());
   const timeline = new TimelineService(
     env.slackTimelinePostTo,
     blackList,
@@ -83,7 +83,7 @@ function initTimeline(app: App, env: Env, slackClient: SlackClient): void {
     }: {
       event: MessageEvent | MessageDeletedEvent;
     }): Promise<void> => {
-      timeline.apply(event).catch(e => {
+      timeline.apply(event).catch((e) => {
         // TODO sentry
         console.error('Error Occured in timeline');
         console.error(e);
@@ -127,16 +127,16 @@ function initSlackOnlyFunction(
           is_member: boolean;
         }[];
         const notMember = channels.filter(
-          x => !x.is_member && !x.is_archived && x.is_channel,
+          (x) => !x.is_member && !x.is_archived && x.is_channel,
         );
         if (notMember.length === 0) {
           say(`入っていないチャンネルはないよ`);
           return;
         }
 
-        const cs = notMember.map(x => x.name).join(', ');
+        const cs = notMember.map((x) => x.name).join(', ');
         say(`入っていないチャンネルは${cs}なので入っていくよ`);
-        notMember.forEach(async c => {
+        notMember.forEach(async (c) => {
           await app.client.conversations.join({
             token: env.slackBotToken,
             channel: c.id,
@@ -154,7 +154,7 @@ function initSlackOnlyFunction(
         const query = context.matches[1];
         await googleCustomSearch
           .googleImage(query)
-          .then(is => {
+          .then((is) => {
             slackClient.postImageUrl(event.channel, query, query, random(is));
           })
           .catch((e: Error) => say(e.message));
@@ -169,7 +169,7 @@ function initSlackOnlyFunction(
         const query = context.matches[1];
         await googleCustomSearch
           .googleImage(query)
-          .then(is => {
+          .then((is) => {
             slackClient.postImageUrl(event.channel, query, query, random(is));
           })
           .catch((e: Error) => say(e.message));
@@ -194,7 +194,7 @@ export async function init(env: Env): Promise<unknown> {
     google.customsearch('v1'),
   );
 
-  Reactions.forEach(v => {
+  Reactions.forEach((v) => {
     const listeners: Array<Middleware<SlackEventMiddlewareArgs<'message'>>> =
       v.alsoNotMentioned ?? false ? [] : [directMention()];
     listeners.push(async ({ context, say }) => {
@@ -210,7 +210,7 @@ export async function init(env: Env): Promise<unknown> {
     initTimeline(app, env, slackClient);
   }
 
-  app.error(e => {
+  app.error((e) => {
     console.error(e);
   });
   return await app.start(env.port);

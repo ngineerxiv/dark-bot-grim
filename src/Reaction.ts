@@ -21,10 +21,10 @@ export const Reactions: Array<BotReaction> = ((): Array<BotReaction> => {
   );
   r.push({
     pattern: /HELP$/i,
-    reaction: async messageSend => {
+    reaction: async (messageSend) => {
       const botName = '@grim';
-      const helps = r.map(v => v.help).filter(v => v !== undefined);
-      const message = '\n' + helps.map(h => h(botName)).join('\n');
+      const helps = r.map((v) => v.help).filter((v) => v !== undefined);
+      const message = '\n' + helps.map((h) => h(botName)).join('\n');
       messageSend(message);
     },
   });

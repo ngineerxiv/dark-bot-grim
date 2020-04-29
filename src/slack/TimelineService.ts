@@ -1,4 +1,4 @@
-import { MessageEvent, MessageDeletedEvent, Context } from '@slack/bolt';
+import { MessageEvent, MessageDeletedEvent } from '@slack/bolt';
 import { SlackClient } from './SlackClient';
 import { TimelineRepository } from './TimelineRepository';
 import { Message, DeletedMessage, User } from './Domain';
