@@ -17,7 +17,7 @@
     "tsc": "tsc"
   },
   "dependencies": {
-    "@slack/bolt": "^1.8.0",
+    "@slack/bolt": "^2.0.1",
     "@types/node": "^13.13.4",
     "@types/redis": "^2.8.18",
     "@types/uuid": "7.0.3",
