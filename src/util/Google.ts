@@ -28,6 +28,6 @@ export class GoogleCustomSearch {
     if (res.status !== 200) {
       throw new Error(`Bad HTTP response. status: ${res.status}`);
     }
-    return res.data.items.map(i => i.link);
+    return res.data.items.map((i) => i.link);
   }
 }

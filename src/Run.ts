@@ -7,7 +7,7 @@ async function main(): Promise<void> {
   console.log(`Slack Event Application started with port ${env.port}`);
 }
 
-main().catch(e => {
+main().catch((e) => {
   console.error(e);
   process.exit(1);
 });
