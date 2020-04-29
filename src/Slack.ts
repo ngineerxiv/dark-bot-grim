@@ -210,7 +210,7 @@ export async function init(env: Env): Promise<unknown> {
     initTimeline(app, env, slackClient);
   }
 
-  app.error((e) => {
+  app.error(async (e) => {
     console.error(e);
   });
   return await app.start(env.port);
