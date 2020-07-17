@@ -42,4 +42,14 @@ export const reactions: Array<BotReaction> = [
     help: (b: string): string =>
       `${b} 選んで A B C - 空白やカンマ区切りのなにかから1つを選んでくれる`,
   },
+  {
+    pattern: /金曜日だよ.+/i,
+    reaction: async (send): Promise<void> => {
+      send(':mrtry: < 全員集合！！！！！！！！！！！！！！！１１１１１');
+      send(':jp_taku: < 集合しろよ！！！！');
+      send(':mrtry: < ごめんな');
+    },
+    help: (b: string): string =>
+      `${b} 選んで A B C - 空白やカンマ区切りのなにかから1つを選んでくれる`,
+  },
 ];
