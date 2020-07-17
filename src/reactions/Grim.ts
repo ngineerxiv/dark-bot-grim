@@ -13,7 +13,7 @@ export const reactions: Array<BotReaction> = [
       const targets = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3];
       const selected = random(targets);
       const url = `http://yamiga.waka.ru.com/images/zoi${selected}.jpg`;
-      send(applyCacheBuster(url));
+      await send(applyCacheBuster(url));
     },
     alsoNotMentioned: true,
     help: (b: string): string => `${b} zoi|ぞい - がんばるぞい`,
@@ -28,7 +28,7 @@ export const reactions: Array<BotReaction> = [
         `＞ ${text} ＜`,
         `￣Y${strpad('^Y', length)}￣`,
       ].join('\n');
-      send(suddenDeath);
+      await send(suddenDeath);
     },
     help: (b: string): string => `${b} 突然の 死 - 突然の死`,
   },
@@ -37,17 +37,17 @@ export const reactions: Array<BotReaction> = [
     reaction: async (send, matched: Array<string>): Promise<void> => {
       const items = matched[1].split(/[・,、\s]+/);
       const selected = random(items);
-      send(`選ばれたのは "${selected}" でした。`);
+      await send(`選ばれたのは "${selected}" でした。`);
     },
     help: (b: string): string =>
       `${b} 選んで A B C - 空白やカンマ区切りのなにかから1つを選んでくれる`,
   },
   {
-    pattern: /金曜日だよ.+/i,
+    pattern: /金曜日だよ.*/i,
     reaction: async (send): Promise<void> => {
-      send(':mrtry: < 全員集合！！！！！！！！！！！！！！！１１１１１');
-      send(':jp_taku: < 集合しろよ！！！！');
-      send(':mrtry: < ごめんな');
+      await send(':mrtry: < 全員集合！！！！！！！！！！！！！！！１１１１１');
+      await send(':jp_taku: < 集合しろよ！！！！');
+      await send(':mrtry: < ごめんな');
     },
     help: (b: string): string =>
       `${b} 「金曜日だよ」って言うと盛り上げてくれる`,
