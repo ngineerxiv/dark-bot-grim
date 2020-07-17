@@ -50,6 +50,6 @@ export const reactions: Array<BotReaction> = [
       send(':mrtry: < ごめんな');
     },
     help: (b: string): string =>
-      `${b} 選んで A B C - 空白やカンマ区切りのなにかから1つを選んでくれる`,
+      `${b} 「金曜日だよ」って言うと盛り上げてくれる`,
   },
 ];
