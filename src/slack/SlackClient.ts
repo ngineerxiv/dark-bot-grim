@@ -1,4 +1,5 @@
 import { App as SlackApp } from '@slack/bolt';
+
 import { MessageID, SlackUser, User, Message } from './Domain';
 
 export interface SlackClient {
@@ -46,27 +47,29 @@ export class SlackClientImpl implements SlackClient {
     if (!users.ok) {
       throw new Error(users.error);
     }
-    const members: Array<SlackUser> = users.members as Array<SlackUser>;
-    return new Map(
-      members.map((m): [string, User] => {
-        let profile = m.profile.image_512;
-        if (profile === '') {
-          profile = m.profile.image_192;
-        }
-        if (profile === '') {
-          profile = m.profile.image_48;
-        }
-        return [
-          m.id,
-          {
-            id: m.id,
-            name: m.name,
-            profile: profile,
-            isBot: m.is_bot,
-          },
-        ];
-      }),
-    );
+    const members = users.members;
+    if (!isArrayOfSlackUser(members)) {
+      throw new Error(`Response don't have members ${users}`);
+    }
+    const us: [string, User][] = members.map((m): [string, User] => {
+      let profile = m.profile.image_512;
+      if (profile === '') {
+        profile = m.profile.image_192;
+      }
+      if (profile === '') {
+        profile = m.profile.image_48;
+      }
+      return [
+        m.id,
+        {
+          id: m.id,
+          name: m.name,
+          profile: profile,
+          isBot: m.is_bot,
+        },
+      ];
+    });
+    return new Map(us);
   }
   async postMessage(arg: {
     channel: string;
@@ -188,3 +191,11 @@ export class SlackClientImpl implements SlackClient {
   }
 }
 /* eslint-enable @typescript-eslint/camelcase */
+
+function isArrayOfSlackUser(obj: unknown): obj is SlackUser[] {
+  return Array.isArray(obj) && obj.every(isSlackUser);
+}
+
+function isSlackUser(obj: unknown): obj is SlackUser {
+  return obj != null && typeof (obj as SlackUser).id === 'string';
+}
