@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { customsearch_v1 } from 'googleapis';
 
 export class GoogleCustomSearch {
@@ -14,7 +13,6 @@ export class GoogleCustomSearch {
     this.googleSearchApiKey = googleSearchApiKey;
     this.customSearch = customSearch;
   }
-  /* eslint-enable @typescript-eslint/camelcase */
 
   async googleImage(query: string): Promise<Array<string>> {
     const res = await this.customSearch.cse.list({

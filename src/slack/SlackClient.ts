@@ -78,7 +78,6 @@ export class SlackClientImpl implements SlackClient {
     iconUrl?: string;
     iconEmoji?: string;
   }): Promise<MessageID> {
-    /* eslint-disable @typescript-eslint/camelcase */
     let icon = {};
     if (arg.iconUrl !== undefined) {
       icon = {
@@ -190,7 +189,6 @@ export class SlackClientImpl implements SlackClient {
     return message.ts;
   }
 }
-/* eslint-enable @typescript-eslint/camelcase */
 
 function isArrayOfSlackUser(obj: unknown): obj is SlackUser[] {
   return Array.isArray(obj) && obj.every(isSlackUser);
