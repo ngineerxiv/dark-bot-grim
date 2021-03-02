@@ -22,7 +22,7 @@
     "@types/redis": "^2.8.28",
     "@types/uuid": "8.3.0",
     "eastasianwidth": "^0.2.0",
-    "googleapis": "^67.1.0",
+    "googleapis": "^67.1.1",
     "redis": "^3.0.2",
     "typescript": "^3.9.7",
     "uuid": "8.3.2"
