@@ -14,7 +14,8 @@
     "eslint": "eslint 'src/**/*.ts'",
     "eslint:fix": "npm run eslint --fix",
     "prettier:fix": "prettier './src/**/*.ts' --write",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "heroku-postbuild": "tsc"
   },
   "dependencies": {
     "@slack/bolt": "^2.5.0",

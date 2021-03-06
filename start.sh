@@ -17,4 +17,4 @@ EOF
 SCRIPT
 trap "$mackerel_agent retire -conf $mackerel_agent_conf -force" TERM
 $mackerel_agent -conf $mackerel_agent_conf -v &
-npm run tsc && node src/Run.js
+node src/Run.js
