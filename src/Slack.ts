@@ -199,7 +199,12 @@ export async function init(env: Env): Promise<unknown> {
       v.alsoNotMentioned ?? false ? [] : [directMention()];
     listeners.push(async ({ context, say }) => {
       const matched = context.matches;
-      v.reaction((m: string) => say(m), matched === null ? [] : matched);
+      v.reaction(
+        (m: string) => {
+          say(m);
+        },
+        matched === null ? [] : matched,
+      );
     });
     app.message(v.pattern, ...listeners);
   });

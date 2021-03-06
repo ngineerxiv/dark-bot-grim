@@ -6,7 +6,10 @@ import { reactions as GrimReactions } from './reactions/Grim';
 
 export interface BotReaction {
   pattern: RegExp;
-  reaction: (send: (m: string) => Promise<any>, matched: Array<string>) => void;
+  reaction: (
+    send: (m: string) => Promise<void> | void,
+    matched: Array<string>,
+  ) => void;
   alsoNotMentioned?: boolean;
   help?: (bot: string) => string;
 }
