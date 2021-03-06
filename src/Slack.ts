@@ -5,6 +5,7 @@ import {
   SlackEventMiddlewareArgs,
   MessageEvent,
   MessageDeletedEvent,
+  ExpressReceiver,
 } from '@slack/bolt';
 import * as redis from 'redis';
 import { Reactions } from './Reaction';
@@ -179,9 +180,18 @@ function initSlackOnlyFunction(
 }
 
 export async function init(env: Env): Promise<unknown> {
+  const receiver = new ExpressReceiver({
+    signingSecret: env.slackSigningSecret,
+  });
+
+  receiver.router.get('/ping', async (_, res) => {
+    res.send('pong');
+  });
+
   const app = new App({
     token: env.slackBotToken,
     signingSecret: env.slackSigningSecret,
+    receiver: receiver,
   });
   const slackClient = new SlackClientImpl(
     app,
