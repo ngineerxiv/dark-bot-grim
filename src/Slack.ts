@@ -210,8 +210,8 @@ export async function init(env: Env): Promise<unknown> {
     listeners.push(async ({ context, say }) => {
       const matched = context.matches;
       v.reaction(
-        (m: string) => {
-          say(m);
+        async (m: string) => {
+          await say(m);
         },
         matched === null ? [] : matched,
       );
