@@ -38,7 +38,6 @@ export class TimelineService {
     } else if (event.subtype === undefined) {
       const e = event as GenericMessageEvent;
       this.postMessage(new Message(e.channel, e.user, e.text, event.ts));
-      return;
     }
     console.info(`Not handled subtype. ${event.subtype}`);
   }
