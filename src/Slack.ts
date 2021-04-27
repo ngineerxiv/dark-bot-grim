@@ -3,8 +3,6 @@ import {
   directMention,
   Middleware,
   SlackEventMiddlewareArgs,
-  MessageEvent,
-  MessageDeletedEvent,
   ExpressReceiver,
 } from '@slack/bolt';
 import * as redis from 'redis';
@@ -18,6 +16,10 @@ import { Env } from './Env';
 import { GoogleCustomSearch } from './util/Google';
 import { google } from 'googleapis';
 import { random } from './util/Random';
+import {
+  MessageDeletedEvent,
+  MessageEvent,
+} from '@slack/bolt/dist/types/events/message-events';
 
 function initNotification(app: App, env: Env, slackClient: SlackClient): void {
   const notification = new Notification(
@@ -79,11 +81,7 @@ function initTimeline(app: App, env: Env, slackClient: SlackClient): void {
   );
   app.event(
     'message',
-    async ({
-      event,
-    }: {
-      event: MessageEvent | MessageDeletedEvent;
-    }): Promise<void> => {
+    async ({ event }: { event: MessageEvent }): Promise<void> => {
       timeline.apply(event).catch((e) => {
         // TODO sentry
         console.error('Error Occured in timeline');
