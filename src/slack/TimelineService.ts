@@ -1,7 +1,11 @@
-import { MessageEvent, MessageDeletedEvent } from '@slack/bolt';
 import { SlackClient } from './SlackClient';
 import { TimelineRepository } from './TimelineRepository';
 import { Message, DeletedMessage, User } from './Domain';
+import {
+  GenericMessageEvent,
+  MessageDeletedEvent,
+  MessageEvent,
+} from '@slack/bolt/dist/types/events/message-events';
 
 export class TimelineService {
   readonly timelineChannelID: string;
@@ -24,23 +28,18 @@ export class TimelineService {
   }
 
   // FIXME @slack/boltに依存しない形にしてテストしたい
-  async apply(event: MessageEvent | MessageDeletedEvent): Promise<void> {
-    switch (event.subtype) {
-      case 'message_deleted':
-        this.deleteMessage({
-          channel: event.channel,
-          deletedTs: event.deleted_ts,
-        });
-        break;
-      case undefined:
-        this.postMessage(
-          new Message(event.channel, event.user, event.text, event.ts),
-        );
-        break;
-      default:
-        console.info(`Not handled subtype. ${event.subtype}`);
-        break;
+  async apply(event: MessageEvent): Promise<void> {
+    if (event.subtype === 'message_deleted') {
+      const e = event as MessageDeletedEvent;
+      this.deleteMessage({
+        channel: e.channel,
+        deletedTs: e.deleted_ts,
+      });
+    } else if (event.subtype === undefined) {
+      const e = event as GenericMessageEvent;
+      this.postMessage(new Message(e.channel, e.user, e.text, event.ts));
     }
+    console.info(`Not handled subtype. ${event.subtype}`);
   }
 
   private async deleteMessage(m: DeletedMessage): Promise<void> {
