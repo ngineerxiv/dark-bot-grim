@@ -38,8 +38,9 @@ export class TimelineService {
     } else if (event.subtype === undefined) {
       const e = event as GenericMessageEvent;
       this.postMessage(new Message(e.channel, e.user, e.text, event.ts));
+    } else {
+      console.info(`Not handled subtype. ${event.subtype}`);
     }
-    console.info(`Not handled subtype. ${event.subtype}`);
   }
 
   private async deleteMessage(m: DeletedMessage): Promise<void> {
