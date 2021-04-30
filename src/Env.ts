@@ -46,6 +46,6 @@ export function validateEnv(env: Env): void {
   }
 
   if (isNaN(env.port)) {
-    throw new Error(`env.port is NaN.`);
+    throw new Error(`env.port is NaN. Raw value: ${process.env.PORT}`);
   }
 }
