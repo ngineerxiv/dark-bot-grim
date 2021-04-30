@@ -3,7 +3,7 @@ export interface Env {
   slackUserToken: string;
   slackSigningSecret: string;
   redisUrl: string;
-  port: string;
+  port: number;
   googleSearchCseId: string;
   googleSearchApiKey: string;
   slackNewChannelNotifyTo: SlackChannelId;
@@ -21,7 +21,7 @@ export const env: Env = {
   slackUserToken: process.env.SLACK_OAUTH_ACCESS_TOKEN,
   slackSigningSecret: process.env.SLACK_SIGNING_SECRET,
   redisUrl: process.env.REDIS_URL,
-  port: process.env.PORT || '8080',
+  port: parseInt(process.env.PORT || '8080'),
   googleSearchCseId: process.env.GOOGLE_SEARCH_CSE_ID,
   googleSearchApiKey: process.env.GOOGLE_SEARCH_API_KEY,
   slackNewChannelNotifyTo: process.env.SLACK_NEW_CHANNEL,
@@ -43,5 +43,9 @@ export function validateEnv(env: Env): void {
     .filter((x) => x !== null);
   if (notFoundKeys.length > 0) {
     throw new Error(`env is insufficient. key: ${notFoundKeys.join(', ')}`);
+  }
+
+  if (isNaN(env.port)) {
+    throw new Error(`env.port is NaN. Raw value: ${process.env.PORT}`);
   }
 }
