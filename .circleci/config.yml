@@ -4,7 +4,7 @@ executors:
     working_directory: ~/repo
     docker:
       # https://circleci.com/docs/ja/2.0/docker-image-tags.json
-      - image: circleci/node:10.16.3
+      - image: circleci/node:14.15.4
 jobs:
   build:
     executor:

@@ -29,38 +29,26 @@ function initNotification(app: App, env: Env, slackClient: SlackClient): void {
     slackClient,
   );
 
-  app.event(
-    'channel_created',
-    async ({ event }): Promise<void> => {
-      return notification.notifyNewChannel(
-        event.channel.id,
-        event.channel.name,
-      );
-    },
-  );
+  app.event('channel_created', async ({ event }): Promise<void> => {
+    return notification.notifyNewChannel(event.channel.id, event.channel.name);
+  });
 
-  app.event(
-    'team_join',
-    async ({ event }): Promise<void> => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const user: any = event.user;
-      return notification.notifyTeamJoin(user.id);
-    },
-  );
+  app.event('team_join', async ({ event }): Promise<void> => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const user: any = event.user;
+    return notification.notifyTeamJoin(user.id);
+  });
 
-  app.event(
-    'emoji_changed',
-    async ({ event }): Promise<void> => {
-      if (event.subtype !== 'add') {
-        return;
-      }
-      return notification.notifyNewEmoji(event.name).catch((e) => {
-        // TODO sentry
-        console.error('Error Occured in notification');
-        console.error(e);
-      });
-    },
-  );
+  app.event('emoji_changed', async ({ event }): Promise<void> => {
+    if (event.subtype !== 'add') {
+      return;
+    }
+    return notification.notifyNewEmoji(event.name).catch((e) => {
+      // TODO sentry
+      console.error('Error Occured in notification');
+      console.error(e);
+    });
+  });
 }
 
 function initTimeline(app: App, env: Env, slackClient: SlackClient): void {
