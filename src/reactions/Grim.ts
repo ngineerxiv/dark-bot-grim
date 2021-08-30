@@ -43,6 +43,14 @@ export const reactions: Array<BotReaction> = [
       `${b} 選んで A B C - 空白やカンマ区切りのなにかから1つを選んでくれる`,
   },
   {
+    pattern: /月曜日だよ.*/i,
+    reaction: async (send): Promise<void> => {
+      await send('………….(返事がないただの屍のようだ');
+    },
+    help: (b: string): string =>
+      `${b} 「月曜日だよ」って言うと真理を見せてくれる`,
+  },
+  {
     pattern: /金曜日だよ.*/i,
     reaction: async (send): Promise<void> => {
       await send(':mrtry: < 全員集合！！！！！！！！！！！！！！！１１１１１');
