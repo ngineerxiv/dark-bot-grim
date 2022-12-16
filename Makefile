@@ -7,8 +7,6 @@ DOCKER=docker
 env=.env
 heroku_app_name=
 
-.PHONY: redis
-
 install:
 	$(NPM) install
 
@@ -17,9 +15,6 @@ compile:
 
 run: $(env) compile
 	set -o allexport && . ./$< && $(NODE) ./src/Run.js
-
-redis:
-	$(DOCKER) run -ti -p 6379:6379 -v $(PWD)/redis:/data redis:5.0.7 
 
 $(env): env.sample
 	cp -f $< $@
@@ -35,7 +30,6 @@ deploy/heroku/env: $(HEROKU)
 
 deploy/heroku/setup: $(HEROKU)
 	$(HEROKU) plugins:install heroku-config
-	$(HEROKU) addons:create heroku-redis:hobby-dev
 
 $(HEROKU):
 	which $@ || echo 'please install heroku cli https://devcenter.heroku.com/articles/heroku-cli'
