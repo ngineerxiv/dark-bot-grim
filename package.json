@@ -18,7 +18,7 @@
     "heroku-postbuild": "tsc"
   },
   "dependencies": {
-    "@slack/bolt": "3.12.2",
+    "@slack/bolt": "3.13.0",
     "@types/node": "^18.15.11",
     "@types/uuid": "9.0.1",
     "eastasianwidth": "^0.2.0",
