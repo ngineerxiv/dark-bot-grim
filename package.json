@@ -22,7 +22,7 @@
     "@types/node": "^18.15.11",
     "@types/uuid": "9.0.1",
     "eastasianwidth": "^0.2.0",
-    "googleapis": "^117.0.0",
+    "googleapis": "^118.0.0",
     "typescript": "^5.0.4",
     "uuid": "9.0.0"
   },
