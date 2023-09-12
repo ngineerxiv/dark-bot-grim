@@ -24,7 +24,7 @@
     "eastasianwidth": "^0.2.0",
     "googleapis": "^126.0.1",
     "typescript": "^5.1.6",
-    "uuid": "9.0.0"
+    "uuid": "9.0.1"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.33.0",
