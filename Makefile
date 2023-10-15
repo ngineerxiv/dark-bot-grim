@@ -16,6 +16,12 @@ compile:
 run: $(env) compile
 	set -o allexport && . ./$< && $(NODE) ./src/Run.js
 
+esbuild:
+	$(NPM) run esbuild
+
+run/esbuild: $(env) esbuild
+	set -o allexport && . ./$< && $(NODE) ./src/Run.js
+
 $(env): env.sample
 	cp -f $< $@
 
