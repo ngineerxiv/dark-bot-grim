@@ -164,12 +164,18 @@ export async function init(env: Env): Promise<unknown> {
   receiver.router.get('/ping', async (_, res) => {
     res.send('pong');
   });
-
-  const app = new App({
-    token: env.slackBotToken,
-    signingSecret: env.slackSigningSecret,
-    receiver: receiver,
-  });
+  const opt = env.useSocketMode
+    ? {
+        token: env.slackBotToken,
+        socketMode: true,
+        appToken: env.slackAppToken,
+      }
+    : {
+        token: env.slackBotToken,
+        signingSecret: env.slackSigningSecret,
+        receiver: receiver,
+      };
+  const app = new App(opt);
   const slackClient = new SlackClientImpl(
     app,
     env.slackBotToken,
