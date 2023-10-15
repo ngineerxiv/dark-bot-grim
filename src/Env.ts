@@ -30,7 +30,7 @@ export const env: Env = {
   slackTimelinePostTo: process.env.SLACK_TIMELINE || null,
   slackTimelineBlackList: process.env.SLACK_TIMELINE_BLACK_LIST || null,
   slackTeamDomain: process.env.SLACK_TEAM_DOMAIN,
-  slackAppToken: process.env.SLACK_APP_TOKEN,
+  slackAppToken: process.env.SLACK_APP_TOKEN || null,
   useSocketMode: process.env.USE_SOCKET_MODE === 'true',
 };
 
