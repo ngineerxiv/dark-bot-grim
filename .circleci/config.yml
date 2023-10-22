@@ -32,4 +32,4 @@ jobs:
             - run: make dist
             - run: make dist/tar
             - store_artifacts:
-              path: dist.tar.gz
+                path: dist.tar.gz
