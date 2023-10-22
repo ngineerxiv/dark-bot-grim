@@ -16,8 +16,15 @@ compile:
 dist:
 	$(NPM) run dist
 
+dist/clean:
+	rm -rf dist dist.tar.gz
+
 dist/tar:
 	tar cvfz dist.tar.gz dist
+
+dist/fetch:
+	curl 'https://circleci.com/api/v1.1/project/github/ngineerxiv/dark-bot-grim/latest/artifacts?branch=master&filter=completed' -H "Circle-Token: $$CIRCLE_CI_TOKEN" | jq '.[0].url'|xargs curl -L -H "Circle-Token: $$CIRCLE_CI_TOKEN" --output ./dist.tar.gz
+	tar xzvf dist.tar.gz
 
 run/dist:
 	set -o allexport && . ./$(env) && $(NODE) ./dist/Run.js
