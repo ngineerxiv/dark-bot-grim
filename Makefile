@@ -13,6 +13,12 @@ install:
 compile:
 	$(NPM) run tsc
 
+dist:
+	$(NPM) run dist
+
+run/dist:
+	set -o allexport && . ./$(env) && $(NODE) ./dist/Run.js
+
 run: $(env) compile
 	set -o allexport && . ./$< && $(NODE) ./src/Run.js
 

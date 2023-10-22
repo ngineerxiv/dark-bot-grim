@@ -15,6 +15,7 @@
     "eslint:fix": "npm run eslint --fix",
     "prettier:fix": "prettier './src/**/*.ts' --write",
     "tsc": "tsc",
+    "dist": "tsc --outDir dist",
     "esbuild": "esbuild src/**/*.ts --outdir=src",
     "heroku-postbuild": "tsc"
   },
