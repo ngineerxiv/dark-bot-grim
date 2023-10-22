@@ -13,6 +13,15 @@ install:
 compile:
 	$(NPM) run tsc
 
+dist:
+	$(NPM) run dist
+
+dist/tar:
+	tar cvfz dist.tar.gz dist
+
+run/dist:
+	set -o allexport && . ./$(env) && $(NODE) ./dist/Run.js
+
 run: $(env) compile
 	set -o allexport && . ./$< && $(NODE) ./src/Run.js
 
