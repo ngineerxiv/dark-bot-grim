@@ -16,6 +16,9 @@ compile:
 dist:
 	$(NPM) run dist
 
+dist/tar:
+	tar cvfz dist.tar.gz dist
+
 run/dist:
 	set -o allexport && . ./$(env) && $(NODE) ./dist/Run.js
 
