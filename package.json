@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@slack/bolt": "3.18.0",
-    "@types/node": "^20.14.2",
+    "@types/node": "^20.14.5",
     "@types/uuid": "9.0.8",
     "eastasianwidth": "^0.3.0",
     "googleapis": "^140.0.0",
