@@ -22,7 +22,7 @@
   "dependencies": {
     "@slack/bolt": "3.19.0",
     "@types/node": "^20.14.6",
-    "@types/uuid": "9.0.8",
+    "@types/uuid": "10.0.0",
     "eastasianwidth": "^0.3.0",
     "googleapis": "^140.0.0",
     "typescript": "^5.1.6",
