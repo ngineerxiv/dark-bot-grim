@@ -25,7 +25,7 @@
     "@types/uuid": "11.0.0",
     "eastasianwidth": "^0.3.0",
     "googleapis": "^149.0.0",
-    "typescript": "^5.9.2",
+    "typescript": "^5.9.3",
     "uuid": "13.0.0"
   },
   "devDependencies": {
